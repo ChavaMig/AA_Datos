@@ -1,0 +1,589 @@
+openapi: 3.0.1
+info:
+  title: aa1
+  description: API de gestión de clínicas médicas, maquinaria, técnicos, tickets y repuestos (AA1)
+  version: 1.0.0
+servers:
+  - url: 'http://localhost:8080'
+paths:
+  # --- RUTAS DE CLINICS ---
+  /clinics:
+    get:
+      summary: Devuelve la lista de clínicas
+      description: |
+        Devuelve una lista con todas las clínicas registradas. 
+        Muestra la información básica a través de **ClinicOutDto**.
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ClinicOutDto'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InternalServerError'
+    post:
+      summary: Registrar una clínica
+      description: Registra una nueva clínica validando que el nombre no esté vacío.
+      requestBody:
+        description: Datos de la nueva clínica (id no es necesario enviarlo)
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Clinic'
+      responses:
+        '201':
+          description: Clínica registrada con éxito
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Clinic'
+        '400':
+          description: Bad request - Error de validación (NotBlank)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequest'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InternalServerError'
+
+  /clinics/{id}:
+    get:
+      summary: Buscar clínica por ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID único de la clínica
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: Clínica encontrada
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ClinicDto'
+        '404':
+          description: Not Found - La clínica no existe
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFound'
+    put:
+      summary: Modificar una clínica
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Clinic'
+      responses:
+        '200':
+          description: Clínica actualizada correctamente
+        '404':
+          description: No encontrada
+    delete:
+      summary: Eliminar una clínica
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '204':
+          description: Clínica eliminada correctamente (No Content)
+
+  # --- RUTAS DE MACHINES ---
+  /machines:
+    get:
+      summary: Devuelve la lista de máquinas
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Machine'
+    post:
+      summary: Registrar una máquina
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Machine'
+      responses:
+        '201':
+          description: Máquina registrada
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequest'
+
+  /machines/{id}:
+    get:
+      summary: Buscar máquina por ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Machine'
+        '404':
+          description: Máquina no encontrada
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFound'
+    put:
+      summary: Modificar una máquina
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Machine'
+      responses:
+        '200':
+          description: Máquina actualizada
+    delete:
+      summary: Eliminar una máquina
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '204':
+          description: Máquina eliminada
+
+  # --- RUTAS DE TECHNICIANS ---
+  /technicians:
+    get:
+      summary: Devuelve la lista de técnicos
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Technician'
+    post:
+      summary: Registrar un técnico
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Technician'
+      responses:
+        '201':
+          description: Técnico creado
+        '400':
+          description: Error de validación
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequest'
+
+  /technicians/{id}:
+    get:
+      summary: Buscar técnico por ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Technician'
+        '404':
+          description: Técnico no encontrado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFound'
+    put:
+      summary: Modificar un técnico
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Technician'
+      responses:
+        '200':
+          description: Técnico actualizado
+    delete:
+      summary: Eliminar un técnico
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '204':
+          description: Técnico eliminado
+
+  # --- RUTAS DE TICKETS ---
+  /tickets:
+    get:
+      summary: Devuelve la lista de tickets
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Ticket'
+    post:
+      summary: Registrar un ticket de avería
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Ticket'
+      responses:
+        '201':
+          description: Ticket creado con éxito
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Ticket'
+        '400':
+          description: Error en los datos obligatorios
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequest'
+
+  /tickets/{id}:
+    get:
+      summary: Buscar ticket por ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Ticket'
+        '404':
+          description: Ticket no encontrado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFound'
+    put:
+      summary: Modificar un ticket
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Ticket'
+      responses:
+        '200':
+          description: Ticket actualizado
+    delete:
+      summary: Eliminar un ticket
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '204':
+          description: Ticket eliminado
+
+  # --- RUTAS DE SPARE PARTS ---
+  /spare-parts:
+    get:
+      summary: Devuelve la lista de repuestos
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/SparePart'
+    post:
+      summary: Registrar un nuevo repuesto
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SparePart'
+      responses:
+        '201':
+          description: Repuesto creado
+        '400':
+          description: Error de validación (BadRequest)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequest'
+
+  /spare-parts/{id}:
+    get:
+      summary: Buscar repuesto por ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SparePart'
+        '404':
+          description: Repuesto no encontrado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFound'
+    put:
+      summary: Modificar un repuesto
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SparePart'
+      responses:
+        '200':
+          description: Repuesto actualizado
+    delete:
+      summary: Eliminar un repuesto
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '204':
+          description: Repuesto eliminado
+
+components:
+  schemas:
+    # --- ESQUEMA CLINIC ---
+    Clinic:
+      type: object
+      required: [name]
+      properties:
+        id: { type: integer, format: int64 }
+        name: { type: string }
+        address: { type: string }
+        phone: { type: string }
+        email: { type: string }
+      example:
+        id: 1
+        name: "Clínica San José"
+
+    # --- ESQUEMA MACHINE ---
+    Machine:
+      type: object
+      required: [serialNumber, model, manufacturer]
+      properties:
+        id: { type: integer, format: int64 }
+        serialNumber: { type: string }
+        model: { type: string }
+        manufacturer: { type: string }
+        clinic: { $ref: '#/components/schemas/Clinic' }
+      example:
+        id: 10
+        serialNumber: "SN-777-B"
+        model: "X-Ray v2"
+        manufacturer: "General Electric"
+
+    # --- ESQUEMA TECHNICIAN ---
+    Technician:
+      type: object
+      required: [name, surname, email]
+      properties:
+        id: { type: integer, format: int64 }
+        name: { type: string }
+        surname: { type: string }
+        email: { type: string, format: email }
+        phone: { type: string }
+        active: { type: boolean, default: true }
+      example:
+        id: 5
+        name: "Alberto"
+        surname: "García"
+        email: "alberto.tec@clinic.com"
+
+    # --- ESQUEMA TICKET ---
+    Ticket:
+      type: object
+      required: [description, openDate, status]
+      properties:
+        id: { type: integer, format: int64 }
+        description: { type: string }
+        openDate: { type: string, format: date }
+        closeDate: { type: string, format: date }
+        status: { type: string }
+        machine: { $ref: '#/components/schemas/Machine' }
+        technician: { $ref: '#/components/schemas/Technician' }
+      example:
+        id: 100
+        description: "Fallo en el equipo"
+        openDate: "2025-12-28"
+        status: "OPEN"
+
+    # --- ESQUEMA SPARE PART ---
+    SparePart:
+      type: object
+      required: [name, serialNumber, manufacturer, price, stock]
+      properties:
+        id:
+          type: integer
+          format: int64
+        name:
+          type: string
+        serialNumber:
+          type: string
+        manufacturer:
+          type: string
+        price:
+          type: number
+          format: double
+        stock:
+          type: integer
+          format: int32
+      example:
+        id: 20
+        name: "Filtro de aire"
+        serialNumber: "SP-55-AA"
+        manufacturer: "MedicalParts"
+        price: 45.50
+        stock: 10
+
+    # --- ESQUEMAS DTO ---
+    ClinicDto:
+      type: object
+      properties:
+        id: { type: integer, format: int64 }
+        name: { type: string }
+        address: { type: string }
+
+    ClinicOutDto:
+      type: object
+      properties:
+        id: { type: integer, format: int64 }
+        name: { type: string }
+
+    # --- ESQUEMAS DE ERROR ---
+    ErrorResponse:
+      type: object
+      properties:
+        code: { type: integer }
+        message: { type: string }
+        title: { type: string }
+
+    InternalServerError:
+      allOf: [$ref: '#/components/schemas/ErrorResponse']
+      example: { code: 500, message: "Error interno", title: "internal-server-error" }
+
+    BadRequest:
+      allOf: [$ref: '#/components/schemas/ErrorResponse']
+      example: { code: 400, message: "Validation error", title: "bad-request" }
+
+    NotFound:
+      allOf: [$ref: '#/components/schemas/ErrorResponse']
+      example: { code: 404, message: "Resource not found", title: "not-found" }
