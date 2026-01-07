@@ -4,53 +4,69 @@ import com.example.aa1.domain.Machine;
 import com.example.aa1.exception.MachineNotFoundException;
 import com.example.aa1.service.MachineService;
 import jakarta.validation.Valid;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 public class MachineController {
 
-    @Autowired
-    private MachineService machineService;
+    private final MachineService machineService;
 
-    // GET /machines
+    public MachineController(MachineService machineService) {
+        this.machineService = machineService;
+    }
+
     @GetMapping("/machines")
     public ResponseEntity<List<Machine>> getAll() {
-        List<Machine> machines = machineService.findAll();
-        return ResponseEntity.ok(machines);
+        return ResponseEntity.ok(machineService.findAll());
     }
 
-    // GET /machines/{id}
     @GetMapping("/machines/{id}")
     public ResponseEntity<Machine> getById(@PathVariable long id) throws MachineNotFoundException {
-        Machine machine = machineService.findById(id);
-        return ResponseEntity.ok(machine);
+        return ResponseEntity.ok(machineService.findById(id));
     }
 
-    // POST /machines
+    @GetMapping("/machines/by-manufacturer")
+    public ResponseEntity<List<Machine>> getByManufacturer(@RequestParam String manufacturer) {
+        return ResponseEntity.ok(machineService.findByManufacturer(manufacturer));
+    }
+
     @PostMapping("/machines")
     public ResponseEntity<Machine> add(@Valid @RequestBody Machine machine) {
-        Machine newMachine = machineService.add(machine);
-        return new ResponseEntity<>(newMachine, HttpStatus.CREATED);
+        return new ResponseEntity<>(machineService.add(machine), HttpStatus.CREATED);
     }
 
-    // PUT /machines/{id}
     @PutMapping("/machines/{id}")
     public ResponseEntity<Machine> modify(@PathVariable long id, @RequestBody Machine machine)
             throws MachineNotFoundException {
-
-        Machine updatedMachine = machineService.modify(id, machine);
-        return ResponseEntity.ok(updatedMachine);
+        return ResponseEntity.ok(machineService.modify(id, machine));
     }
 
-    // DELETE /machines/{id}
+    // ✅ PATCH
+    @PatchMapping("/machines/{id}")
+    public ResponseEntity<Machine> patch(
+            @PathVariable Long id,
+            @RequestBody Map<String, Object> updates)
+            throws MachineNotFoundException {
+
+        return ResponseEntity.ok(machineService.patch(id, updates));
+    }
+
     @DeleteMapping("/machines/{id}")
     public ResponseEntity<Void> delete(@PathVariable long id) throws MachineNotFoundException {
         machineService.delete(id);
         return ResponseEntity.noContent().build();
     }
+
+    @ExceptionHandler(MachineNotFoundException.class)
+    public ResponseEntity<Map<String, String>> handleMachineNotFound(MachineNotFoundException ex) {
+        return ResponseEntity
+                .status(HttpStatus.NOT_FOUND)
+                .body(Map.of("error", ex.getMessage()));
+    }
+
 }

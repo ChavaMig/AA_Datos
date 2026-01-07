@@ -9,8 +9,11 @@ import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.ReflectionUtils;
 
+import java.lang.reflect.Field;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class ClinicService {
@@ -52,5 +55,28 @@ public class ClinicService {
         existingClinic.setId(id);
 
         return clinicRepository.save(existingClinic);
+    }
+
+    // ✅ PATCH
+    public Clinic patch(long id, Map<String, Object> updates)
+            throws ClinicNotFoundException {
+
+        Clinic clinic = clinicRepository.findById(id)
+                .orElseThrow(() -> new ClinicNotFoundException("Clinica no encontrada"));
+
+        updates.forEach((key, value) -> {
+            Field field = ReflectionUtils.findField(Clinic.class, key);
+            if (field != null) {
+                field.setAccessible(true);
+                ReflectionUtils.setField(field, clinic, value);
+            }
+        });
+
+        return clinicRepository.save(clinic);
+    }
+
+    // ✅ JPQL
+    public List<Clinic> findByName(String name) {
+        return clinicRepository.findByNameContaining(name);
     }
 }
