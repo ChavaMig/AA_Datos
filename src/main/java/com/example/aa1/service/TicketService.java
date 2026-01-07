@@ -37,10 +37,29 @@ public class TicketService {
         ticketRepository.delete(ticket);
     }
 
-    public List<TicketOutDto> findAllOut() {
+    // ===================== GET CON FILTRADO =====================
+
+    public List<TicketOutDto> findWithFilters(
+            String status,
+            Long machineId,
+            Long technicianId
+    ) {
+
         List<Ticket> tickets = ticketRepository.findAll();
+
+        List<Ticket> filtered = tickets.stream()
+                .filter(t -> status == null ||
+                        t.getStatus().equalsIgnoreCase(status))
+                .filter(t -> machineId == null ||
+                        (t.getMachine() != null &&
+                                t.getMachine().getId().equals(machineId)))
+                .filter(t -> technicianId == null ||
+                        (t.getTechnician() != null &&
+                                t.getTechnician().getId().equals(technicianId)))
+                .toList();
+
         return modelMapper.map(
-                tickets,
+                filtered,
                 new TypeToken<List<TicketOutDto>>() {}.getType()
         );
     }
@@ -82,17 +101,4 @@ public class TicketService {
 
         return ticketRepository.save(ticket);
     }
-
-    // ===================== EXTRA (Ticket) =====================
-
-    public List<TicketOutDto> findByTechnicianOut(long technicianId) {
-        List<Ticket> tickets =
-                ticketRepository.findByTechnicianId(technicianId);
-
-        return modelMapper.map(
-                tickets,
-                new TypeToken<List<TicketOutDto>>() {}.getType()
-        );
-    }
-
 }

@@ -28,16 +28,38 @@ public class ClinicService {
         return clinicRepository.save(clinic);
     }
 
+    // ===================== GET CON FILTRADO =====================
+
+    public List<ClinicOutDto> findWithFilters(
+            String name,
+            String address,
+            String phone
+    ) {
+
+        List<Clinic> clinics = clinicRepository.findAll();
+
+        List<Clinic> filtered = clinics.stream()
+                .filter(c -> name == null ||
+                        c.getName().toLowerCase().contains(name.toLowerCase()))
+                .filter(c -> address == null ||
+                        (c.getAddress() != null &&
+                                c.getAddress().toLowerCase().contains(address.toLowerCase())))
+                .filter(c -> phone == null ||
+                        (c.getPhone() != null &&
+                                c.getPhone().contains(phone)))
+                .toList();
+
+        return modelMapper.map(
+                filtered,
+                new TypeToken<List<ClinicOutDto>>() {}.getType()
+        );
+    }
+
     public void delete(long id) throws ClinicNotFoundException {
         Clinic clinic = clinicRepository.findById(id)
                 .orElseThrow(() -> new ClinicNotFoundException("Clinica no encontrada"));
 
         clinicRepository.delete(clinic);
-    }
-
-    public List<ClinicOutDto> findAll() {
-        List<Clinic> clinics = clinicRepository.findAll();
-        return modelMapper.map(clinics, new TypeToken<List<ClinicOutDto>>() {}.getType());
     }
 
     public ClinicDto findById(long id) throws ClinicNotFoundException {
@@ -47,7 +69,9 @@ public class ClinicService {
         return modelMapper.map(clinic, ClinicDto.class);
     }
 
-    public Clinic modify(long id, Clinic clinic) throws ClinicNotFoundException {
+    public Clinic modify(long id, Clinic clinic)
+            throws ClinicNotFoundException {
+
         Clinic existingClinic = clinicRepository.findById(id)
                 .orElseThrow(() -> new ClinicNotFoundException("Clinica no encontrada"));
 
@@ -57,7 +81,8 @@ public class ClinicService {
         return clinicRepository.save(existingClinic);
     }
 
-    // ✅ PATCH
+    // ===================== PATCH =====================
+
     public Clinic patch(long id, Map<String, Object> updates)
             throws ClinicNotFoundException {
 
@@ -75,7 +100,7 @@ public class ClinicService {
         return clinicRepository.save(clinic);
     }
 
-    // ✅ JPQL
+    // ⚠️ JPQL se mantiene para OTRO punto del trabajo
     public List<Clinic> findByName(String name) {
         return clinicRepository.findByNameContaining(name);
     }

@@ -27,6 +27,26 @@ public class TechnicianService {
         return technicianRepository.save(technician);
     }
 
+    // ===================== GET CON FILTRADO =====================
+
+    public List<Technician> findWithFilters(
+            String name,
+            String email,
+            Boolean active
+    ) {
+
+        List<Technician> technicians = technicianRepository.findAll();
+
+        return technicians.stream()
+                .filter(t -> name == null ||
+                        t.getName().toLowerCase().contains(name.toLowerCase()))
+                .filter(t -> email == null ||
+                        t.getEmail().toLowerCase().contains(email.toLowerCase()))
+                .filter(t -> active == null ||
+                        t.isActive() == active)
+                .toList();
+    }
+
     public List<Technician> findAll() {
         return technicianRepository.findAll();
     }
@@ -48,7 +68,8 @@ public class TechnicianService {
         return technicianRepository.save(existing);
     }
 
-    // ✅ PATCH
+    // ===================== PATCH =====================
+
     public Technician patch(long id, Map<String, Object> updates)
             throws TechnicianNotFoundException {
 

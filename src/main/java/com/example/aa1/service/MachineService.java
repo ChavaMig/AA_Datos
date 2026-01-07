@@ -23,6 +23,32 @@ public class MachineService {
         return machineRepository.save(machine);
     }
 
+    // ===================== GET CON FILTRADO =====================
+
+    public List<Machine> findWithFilters(
+            String serialNumber,
+            String model,
+            String manufacturer
+    ) {
+
+        List<Machine> machines = machineRepository.findAll();
+
+        return machines.stream()
+                .filter(m -> serialNumber == null ||
+                        m.getSerialNumber()
+                                .toLowerCase()
+                                .contains(serialNumber.toLowerCase()))
+                .filter(m -> model == null ||
+                        m.getModel()
+                                .toLowerCase()
+                                .contains(model.toLowerCase()))
+                .filter(m -> manufacturer == null ||
+                        m.getManufacturer()
+                                .toLowerCase()
+                                .contains(manufacturer.toLowerCase()))
+                .toList();
+    }
+
     public List<Machine> findAll() {
         return machineRepository.findAll();
     }
@@ -32,7 +58,9 @@ public class MachineService {
                 .orElseThrow(() -> new MachineNotFoundException("Machine not found"));
     }
 
-    public Machine modify(Long id, Machine machine) throws MachineNotFoundException {
+    public Machine modify(Long id, Machine machine)
+            throws MachineNotFoundException {
+
         Machine existingMachine = machineRepository.findById(id)
                 .orElseThrow(() -> new MachineNotFoundException("Machine not found"));
 
@@ -43,7 +71,8 @@ public class MachineService {
         return machineRepository.save(existingMachine);
     }
 
-    // ✅ PATCH
+    // ===================== PATCH =====================
+
     public Machine patch(Long id, Map<String, Object> updates)
             throws MachineNotFoundException {
 
@@ -66,9 +95,5 @@ public class MachineService {
                 .orElseThrow(() -> new MachineNotFoundException("Machine not found"));
 
         machineRepository.delete(machine);
-    }
-
-    public List<Machine> findByManufacturer(String manufacturer) {
-        return machineRepository.findByManufacturer(manufacturer);
     }
 }

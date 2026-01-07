@@ -24,14 +24,23 @@ public class ClinicController {
     @Autowired
     private ClinicService clinicService;
 
+    // ===================== GET (CON FILTRADO REAL) =====================
+
     @GetMapping("/clinics")
-    public ResponseEntity<List<ClinicOutDto>> getAll() {
-        List<ClinicOutDto> clinicsOutDto = clinicService.findAll();
-        return ResponseEntity.ok(clinicsOutDto);
+    public ResponseEntity<List<ClinicOutDto>> getAll(
+            @RequestParam(required = false) String name,
+            @RequestParam(required = false) String address,
+            @RequestParam(required = false) String phone
+    ) {
+        return ResponseEntity.ok(
+                clinicService.findWithFilters(name, address, phone)
+        );
     }
 
     @GetMapping("/clinics/{id}")
-    public ResponseEntity<ClinicDto> get(@PathVariable long id) throws ClinicNotFoundException {
+    public ResponseEntity<ClinicDto> get(@PathVariable long id)
+            throws ClinicNotFoundException {
+
         ClinicDto clinicDto = clinicService.findById(id);
         return ResponseEntity.ok(clinicDto);
     }
@@ -43,15 +52,17 @@ public class ClinicController {
     }
 
     @PutMapping("/clinics/{id}")
-    public ResponseEntity<Clinic> modifyClinic(@PathVariable long id,
-                                               @RequestBody Clinic clinic)
+    public ResponseEntity<Clinic> modifyClinic(
+            @PathVariable long id,
+            @RequestBody Clinic clinic)
             throws ClinicNotFoundException {
 
         Clinic newClinic = clinicService.modify(id, clinic);
         return ResponseEntity.ok(newClinic);
     }
 
-    // ✅ PATCH
+    // ===================== PATCH =====================
+
     @PatchMapping("/clinics/{id}")
     public ResponseEntity<Clinic> patchClinic(
             @PathVariable long id,
@@ -62,12 +73,6 @@ public class ClinicController {
         return ResponseEntity.ok(updatedClinic);
     }
 
-    // ✅ JPQL SEARCH
-    @GetMapping("/clinics/search")
-    public ResponseEntity<List<Clinic>> searchByName(@RequestParam String name) {
-        return ResponseEntity.ok(clinicService.findByName(name));
-    }
-
     @DeleteMapping("/clinics/{id}")
     public ResponseEntity<Void> deleteClinic(@PathVariable long id)
             throws ClinicNotFoundException {
@@ -76,14 +81,21 @@ public class ClinicController {
         return ResponseEntity.noContent().build();
     }
 
+    // ===================== EXCEPTIONS =====================
+
     @ExceptionHandler(ClinicNotFoundException.class)
-    public ResponseEntity<ErrorResponse> handleException(ClinicNotFoundException cnfe) {
-        ErrorResponse errorResponse = ErrorResponse.notFound("The clinic does not exist");
+    public ResponseEntity<ErrorResponse> handleException(
+            ClinicNotFoundException cnfe) {
+
+        ErrorResponse errorResponse =
+                ErrorResponse.notFound("The clinic does not exist");
         return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<ErrorResponse> handleException(MethodArgumentNotValidException manve) {
+    public ResponseEntity<ErrorResponse> handleException(
+            MethodArgumentNotValidException manve) {
+
         Map<String, String> errors = new HashMap<>();
 
         manve.getBindingResult().getAllErrors().forEach(error -> {
@@ -92,7 +104,8 @@ public class ClinicController {
             errors.put(fieldName, message);
         });
 
-        ErrorResponse errorResponse = ErrorResponse.validationError(errors);
+        ErrorResponse errorResponse =
+                ErrorResponse.validationError(errors);
         return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
     }
 }

@@ -24,13 +24,23 @@ public class SparePartController {
         this.sparePartService = sparePartService;
     }
 
+    // ===================== GET (CON FILTRADO REAL) =====================
+
     @GetMapping
-    public ResponseEntity<List<SparePart>> getAll() {
-        return ResponseEntity.ok(sparePartService.findAll());
+    public ResponseEntity<List<SparePart>> getAll(
+            @RequestParam(required = false) String name,
+            @RequestParam(required = false) String manufacturer,
+            @RequestParam(required = false) Double price
+    ) {
+        return ResponseEntity.ok(
+                sparePartService.findWithFilters(name, manufacturer, price)
+        );
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<SparePart> getById(@PathVariable Long id) throws SparePartNotFoundException {
+    public ResponseEntity<SparePart> getById(@PathVariable Long id)
+            throws SparePartNotFoundException {
+
         return ResponseEntity.ok(sparePartService.findById(id));
     }
 
@@ -48,7 +58,8 @@ public class SparePartController {
         return ResponseEntity.ok(sparePartService.modify(id, sparePart));
     }
 
-    // ✅ PATCH
+    // ===================== PATCH =====================
+
     @PatchMapping("/{id}")
     public ResponseEntity<SparePart> patch(
             @PathVariable Long id,
@@ -59,20 +70,28 @@ public class SparePartController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(@PathVariable Long id) throws SparePartNotFoundException {
+    public ResponseEntity<Void> delete(@PathVariable Long id)
+            throws SparePartNotFoundException {
+
         sparePartService.delete(id);
         return ResponseEntity.noContent().build();
     }
 
+    // ===================== EXCEPTIONS =====================
+
     @ExceptionHandler(SparePartNotFoundException.class)
-    public ResponseEntity<Map<String, String>> handleNotFound(SparePartNotFoundException ex) {
-        Map<String, String> error = new HashMap<>();
-        error.put("error", ex.getMessage());
-        return new ResponseEntity<>(error, HttpStatus.NOT_FOUND);
+    public ResponseEntity<Map<String, String>> handleNotFound(
+            SparePartNotFoundException ex) {
+
+        return ResponseEntity
+                .status(HttpStatus.NOT_FOUND)
+                .body(Map.of("error", ex.getMessage()));
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<Map<String, String>> handleValidation(MethodArgumentNotValidException ex) {
+    public ResponseEntity<Map<String, String>> handleValidation(
+            MethodArgumentNotValidException ex) {
+
         Map<String, String> errors = new HashMap<>();
 
         ex.getBindingResult().getAllErrors().forEach(error -> {

@@ -19,6 +19,26 @@ public class SparePartService {
         this.sparePartRepository = sparePartRepository;
     }
 
+    // ===================== GET CON FILTRADO =====================
+
+    public List<SparePart> findWithFilters(
+            String name,
+            String manufacturer,
+            Double price
+    ) {
+
+        List<SparePart> spareParts = sparePartRepository.findAll();
+
+        return spareParts.stream()
+                .filter(sp -> name == null ||
+                        sp.getName().toLowerCase().contains(name.toLowerCase()))
+                .filter(sp -> manufacturer == null ||
+                        sp.getManufacturer().toLowerCase().contains(manufacturer.toLowerCase()))
+                .filter(sp -> price == null ||
+                        sp.getPrice().equals(price))
+                .toList();
+    }
+
     public List<SparePart> findAll() {
         return sparePartRepository.findAll();
     }
@@ -32,7 +52,9 @@ public class SparePartService {
         return sparePartRepository.save(sparePart);
     }
 
-    public SparePart modify(Long id, SparePart sparePart) throws SparePartNotFoundException {
+    public SparePart modify(Long id, SparePart sparePart)
+            throws SparePartNotFoundException {
+
         SparePart existing = sparePartRepository.findById(id)
                 .orElseThrow(SparePartNotFoundException::new);
 
@@ -40,7 +62,8 @@ public class SparePartService {
         return sparePartRepository.save(sparePart);
     }
 
-    // ✅ PATCH
+    // ===================== PATCH =====================
+
     public SparePart patch(Long id, Map<String, Object> updates)
             throws SparePartNotFoundException {
 

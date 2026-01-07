@@ -24,12 +24,17 @@ public class TicketController {
     @Autowired
     private TicketService ticketService;
 
-    // ===================== GET =====================
+    //  GET (CON FILTRADO )
 
     @GetMapping("/tickets")
-    public ResponseEntity<List<TicketOutDto>> getAll() {
-        List<TicketOutDto> ticketsOutDto = ticketService.findAllOut();
-        return ResponseEntity.ok(ticketsOutDto);
+    public ResponseEntity<List<TicketOutDto>> getAll(
+            @RequestParam(required = false) String status,
+            @RequestParam(required = false) Long machineId,
+            @RequestParam(required = false) Long technicianId
+    ) {
+        return ResponseEntity.ok(
+                ticketService.findWithFilters(status, machineId, technicianId)
+        );
     }
 
     @GetMapping("/tickets/{id}")
@@ -38,15 +43,6 @@ public class TicketController {
 
         TicketDto ticketDto = ticketService.findByIdDto(id);
         return ResponseEntity.ok(ticketDto);
-    }
-
-    // ✅ EXTRA FUNCIONALIDAD (Ticket)
-    @GetMapping("/tickets/by-technician/{technicianId}")
-    public ResponseEntity<List<TicketOutDto>> getByTechnician(
-            @PathVariable long technicianId) {
-
-        List<TicketOutDto> tickets = ticketService.findByTechnicianOut(technicianId);
-        return ResponseEntity.ok(tickets);
     }
 
     // ===================== POST =====================

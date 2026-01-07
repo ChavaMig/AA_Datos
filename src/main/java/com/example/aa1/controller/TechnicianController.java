@@ -21,14 +21,23 @@ public class TechnicianController {
         this.technicianService = technicianService;
     }
 
+    // ===================== GET (CON FILTRADO ) =====================
+
     @GetMapping
-    public ResponseEntity<List<Technician>> getAll() {
-        return ResponseEntity.ok(technicianService.findAll());
+    public ResponseEntity<List<Technician>> getAll(
+            @RequestParam(required = false) String name,
+            @RequestParam(required = false) String email,
+            @RequestParam(required = false) Boolean active
+    ) {
+        return ResponseEntity.ok(
+                technicianService.findWithFilters(name, email, active)
+        );
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<Technician> get(@PathVariable long id)
             throws TechnicianNotFoundException {
+
         return ResponseEntity.ok(technicianService.findById(id));
     }
 
@@ -46,7 +55,8 @@ public class TechnicianController {
         return ResponseEntity.ok(technicianService.modify(id, technician));
     }
 
-    // ✅ PATCH
+    // ===================== PATCH =====================
+
     @PatchMapping("/{id}")
     public ResponseEntity<Technician> patch(
             @PathVariable long id,
@@ -65,7 +75,9 @@ public class TechnicianController {
     }
 
     @ExceptionHandler(TechnicianNotFoundException.class)
-    public ResponseEntity<String> handleTechnicianNotFound(TechnicianNotFoundException ex) {
+    public ResponseEntity<String> handleTechnicianNotFound(
+            TechnicianNotFoundException ex) {
+
         return new ResponseEntity<>(ex.getMessage(), HttpStatus.NOT_FOUND);
     }
 }
