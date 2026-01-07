@@ -80,4 +80,15 @@ public class TechnicianController {
 
         return new ResponseEntity<>(ex.getMessage(), HttpStatus.NOT_FOUND);
     }
+
+    // ===================== JPQL =====================
+
+    @GetMapping("/by-active/{active}")
+    public ResponseEntity<List<Technician>> getByActive(
+            @PathVariable boolean active) {
+
+        return ResponseEntity.ok(
+                technicianService.findByActive(active)
+        );
+    }
 }

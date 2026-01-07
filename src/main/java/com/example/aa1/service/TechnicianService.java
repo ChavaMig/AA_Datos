@@ -93,4 +93,10 @@ public class TechnicianService {
 
         technicianRepository.delete(technician);
     }
+
+    // ===================== JPQL =====================
+
+    public List<Technician> findByActive(boolean active) {
+        return technicianRepository.findByActive(active);
+    }
 }

@@ -96,4 +96,10 @@ public class MachineService {
 
         machineRepository.delete(machine);
     }
+
+    // ===================== JPQL =====================
+
+    public List<Machine> findByClinicId(Long clinicId) {
+        return machineRepository.findByClinicId(clinicId);
+    }
 }

@@ -64,6 +64,19 @@ public class TicketService {
         );
     }
 
+    // ===================== JPQL (NUEVO) =====================
+
+    public List<TicketOutDto> findByStatusJPQL(String status) {
+
+        List<Ticket> tickets =
+                ticketRepository.findByStatusJPQL(status);
+
+        return modelMapper.map(
+                tickets,
+                new TypeToken<List<TicketOutDto>>() {}.getType()
+        );
+    }
+
     public TicketDto findByIdDto(long id) throws TicketNotFoundException {
         Ticket ticket = ticketRepository.findById(id)
                 .orElseThrow(() -> new TicketNotFoundException("Ticket not found"));

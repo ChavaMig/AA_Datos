@@ -80,4 +80,15 @@ public class MachineController {
                 .status(HttpStatus.NOT_FOUND)
                 .body(Map.of("error", ex.getMessage()));
     }
+
+    // ===================== JPQL =====================
+
+    @GetMapping("/machines/by-clinic/{clinicId}")
+    public ResponseEntity<List<Machine>> getByClinic(
+            @PathVariable Long clinicId) {
+
+        return ResponseEntity.ok(
+                machineService.findByClinicId(clinicId)
+        );
+    }
 }

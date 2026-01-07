@@ -24,7 +24,7 @@ public class TicketController {
     @Autowired
     private TicketService ticketService;
 
-    //  GET (CON FILTRADO )
+    // ===================== GET (CON FILTRADO) =====================
 
     @GetMapping("/tickets")
     public ResponseEntity<List<TicketOutDto>> getAll(
@@ -34,6 +34,16 @@ public class TicketController {
     ) {
         return ResponseEntity.ok(
                 ticketService.findWithFilters(status, machineId, technicianId)
+        );
+    }
+
+    // ===================== JPQL (NUEVO) =====================
+    @GetMapping("/tickets/jpql/by-status")
+    public ResponseEntity<List<TicketOutDto>> getByStatusJPQL(
+            @RequestParam String status) {
+
+        return ResponseEntity.ok(
+                ticketService.findByStatusJPQL(status)
         );
     }
 

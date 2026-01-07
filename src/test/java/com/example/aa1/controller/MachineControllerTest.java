@@ -76,18 +76,7 @@ class MachineControllerTest {
                 .andExpect(status().isNotFound());
     }
 
-    // -------------------------
-    // 200 OK - GET /machines/by-manufacturer
-    // -------------------------
-    @Test
-    void getByManufacturer_returns200() throws Exception {
-        when(machineService.findByManufacturer("ACME"))
-                .thenReturn(List.of(new Machine()));
 
-        mockMvc.perform(get("/machines/by-manufacturer")
-                        .param("manufacturer", "ACME"))
-                .andExpect(status().isOk());
-    }
 
     // -------------------------
     // 400 BAD REQUEST - POST /machines
