@@ -1,51 +1,98 @@
 package com.example.aa1.service;
 
 import com.example.aa1.domain.Ticket;
+import com.example.aa1.dto.TicketDto;
+import com.example.aa1.dto.TicketOutDto;
 import com.example.aa1.exception.TicketNotFoundException;
 import com.example.aa1.repository.TicketRepository;
+import org.modelmapper.ModelMapper;
+import org.modelmapper.TypeToken;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.ReflectionUtils;
 
+import java.lang.reflect.Field;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class TicketService {
 
-    private final TicketRepository ticketRepository;
+    @Autowired
+    TicketRepository ticketRepository;
 
-    public TicketService(TicketRepository ticketRepository) {
-        this.ticketRepository = ticketRepository;
-    }
+    @Autowired
+    ModelMapper modelMapper;
 
-    // CREATE
+    // ===================== CRUD =====================
+
     public Ticket add(Ticket ticket) {
         return ticketRepository.save(ticket);
     }
 
-    // READ ALL
-    public List<Ticket> findAll() {
-        return ticketRepository.findAll();
-    }
-
-    // READ BY ID
-    public Ticket findById(Long id) throws TicketNotFoundException {
-        return ticketRepository.findById(id)
-                .orElseThrow(TicketNotFoundException::new);
-    }
-
-    // UPDATE
-    public Ticket modify(Long id, Ticket ticket) throws TicketNotFoundException {
-        Ticket existingTicket = ticketRepository.findById(id)
-                .orElseThrow(TicketNotFoundException::new);
-
-        ticket.setId(existingTicket.getId());
-        return ticketRepository.save(ticket);
-    }
-
-    // DELETE
-    public void delete(Long id) throws TicketNotFoundException {
+    public void delete(long id) throws TicketNotFoundException {
         Ticket ticket = ticketRepository.findById(id)
-                .orElseThrow(TicketNotFoundException::new);
+                .orElseThrow(() -> new TicketNotFoundException("Ticket not found"));
 
         ticketRepository.delete(ticket);
     }
+
+    public List<TicketOutDto> findAllOut() {
+        List<Ticket> tickets = ticketRepository.findAll();
+        return modelMapper.map(
+                tickets,
+                new TypeToken<List<TicketOutDto>>() {}.getType()
+        );
+    }
+
+    public TicketDto findByIdDto(long id) throws TicketNotFoundException {
+        Ticket ticket = ticketRepository.findById(id)
+                .orElseThrow(() -> new TicketNotFoundException("Ticket not found"));
+
+        return modelMapper.map(ticket, TicketDto.class);
+    }
+
+    public Ticket modify(long id, Ticket ticket)
+            throws TicketNotFoundException {
+
+        Ticket existingTicket = ticketRepository.findById(id)
+                .orElseThrow(() -> new TicketNotFoundException("Ticket not found"));
+
+        modelMapper.map(ticket, existingTicket);
+        existingTicket.setId(id);
+
+        return ticketRepository.save(existingTicket);
+    }
+
+    // ===================== PATCH =====================
+
+    public Ticket patch(long id, Map<String, Object> updates)
+            throws TicketNotFoundException {
+
+        Ticket ticket = ticketRepository.findById(id)
+                .orElseThrow(() -> new TicketNotFoundException("Ticket not found"));
+
+        updates.forEach((key, value) -> {
+            Field field = ReflectionUtils.findField(Ticket.class, key);
+            if (field != null) {
+                field.setAccessible(true);
+                ReflectionUtils.setField(field, ticket, value);
+            }
+        });
+
+        return ticketRepository.save(ticket);
+    }
+
+    // ===================== EXTRA (Ticket) =====================
+
+    public List<TicketOutDto> findByTechnicianOut(long technicianId) {
+        List<Ticket> tickets =
+                ticketRepository.findByTechnicianId(technicianId);
+
+        return modelMapper.map(
+                tickets,
+                new TypeToken<List<TicketOutDto>>() {}.getType()
+        );
+    }
+
 }

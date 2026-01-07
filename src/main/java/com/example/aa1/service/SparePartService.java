@@ -4,8 +4,11 @@ import com.example.aa1.domain.SparePart;
 import com.example.aa1.exception.SparePartNotFoundException;
 import com.example.aa1.repository.SparePartRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.util.ReflectionUtils;
 
+import java.lang.reflect.Field;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class SparePartService {
@@ -30,10 +33,28 @@ public class SparePartService {
     }
 
     public SparePart modify(Long id, SparePart sparePart) throws SparePartNotFoundException {
-        SparePart existingSparePart = sparePartRepository.findById(id)
+        SparePart existing = sparePartRepository.findById(id)
                 .orElseThrow(SparePartNotFoundException::new);
 
-        sparePart.setId(existingSparePart.getId());
+        sparePart.setId(existing.getId());
+        return sparePartRepository.save(sparePart);
+    }
+
+    // ✅ PATCH
+    public SparePart patch(Long id, Map<String, Object> updates)
+            throws SparePartNotFoundException {
+
+        SparePart sparePart = sparePartRepository.findById(id)
+                .orElseThrow(SparePartNotFoundException::new);
+
+        updates.forEach((key, value) -> {
+            Field field = ReflectionUtils.findField(SparePart.class, key);
+            if (field != null) {
+                field.setAccessible(true);
+                ReflectionUtils.setField(field, sparePart, value);
+            }
+        });
+
         return sparePartRepository.save(sparePart);
     }
 

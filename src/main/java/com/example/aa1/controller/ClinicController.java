@@ -51,6 +51,23 @@ public class ClinicController {
         return ResponseEntity.ok(newClinic);
     }
 
+    // ✅ PATCH
+    @PatchMapping("/clinics/{id}")
+    public ResponseEntity<Clinic> patchClinic(
+            @PathVariable long id,
+            @RequestBody Map<String, Object> updates)
+            throws ClinicNotFoundException {
+
+        Clinic updatedClinic = clinicService.patch(id, updates);
+        return ResponseEntity.ok(updatedClinic);
+    }
+
+    // ✅ JPQL SEARCH
+    @GetMapping("/clinics/search")
+    public ResponseEntity<List<Clinic>> searchByName(@RequestParam String name) {
+        return ResponseEntity.ok(clinicService.findByName(name));
+    }
+
     @DeleteMapping("/clinics/{id}")
     public ResponseEntity<Void> deleteClinic(@PathVariable long id)
             throws ClinicNotFoundException {
