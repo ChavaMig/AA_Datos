@@ -34,6 +34,7 @@ public class Clinic {
     private String email;
 
     //Relacion con la lista de machines
+
     @OneToMany(mappedBy = "clinic")
     @JsonManagedReference // El "padre" gestiona la referencia
     private List<Machine> machines;

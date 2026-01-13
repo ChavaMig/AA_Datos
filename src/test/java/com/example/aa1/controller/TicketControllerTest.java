@@ -33,7 +33,7 @@ class TicketControllerTest {
     @Autowired
     private ObjectMapper objectMapper;
 
-    // ===================== GET =====================
+    //  GET
 
     @Test
     void getAll_returns200() throws Exception {

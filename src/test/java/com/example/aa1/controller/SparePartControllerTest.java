@@ -33,9 +33,9 @@ class SparePartControllerTest {
     @Autowired
     private ObjectMapper objectMapper;
 
-    // -------------------------
+
     // 200 OK - GET /spare-parts
-    // -------------------------
+
     @Test
     void getAllSpareParts_returns200() throws Exception {
         when(sparePartService.findAll())
@@ -45,9 +45,9 @@ class SparePartControllerTest {
                 .andExpect(status().isOk());
     }
 
-    // -------------------------
+
     // 200 OK - GET /spare-parts/{id}
-    // -------------------------
+
     @Test
     void getSparePart_existingId_returns200() throws Exception {
         SparePart sparePart = SparePart.builder()
@@ -67,9 +67,9 @@ class SparePartControllerTest {
                 .andExpect(jsonPath("$.name").value("Filtro"));
     }
 
-    // -------------------------
+
     // 404 NOT FOUND - GET /spare-parts/{id}
-    // -------------------------
+
     @Test
     void getSparePart_nonExistingId_returns404() throws Exception {
         when(sparePartService.findById(99L))
@@ -80,9 +80,9 @@ class SparePartControllerTest {
                 .andExpect(jsonPath("$.error").exists());
     }
 
-    // -------------------------
+
     // 201 CREATED - POST /spare-parts
-    // -------------------------
+
     @Test
     void addSparePart_validBody_returns201() throws Exception {
         SparePart sparePart = SparePart.builder()
@@ -103,9 +103,9 @@ class SparePartControllerTest {
                 .andExpect(jsonPath("$.name").value("Filtro"));
     }
 
-    // -------------------------
+
     // 400 BAD REQUEST - POST /spare-parts
-    // -------------------------
+
     @Test
     void addSparePart_invalidBody_returns400() throws Exception {
         // name es obligatorio → lo omitimos
@@ -122,9 +122,9 @@ class SparePartControllerTest {
                 .andExpect(status().isBadRequest());
     }
 
-    // -------------------------
+
     // 200 OK - PATCH /spare-parts/{id}
-    // -------------------------
+
     @Test
     void patchSparePart_existingId_returns200() throws Exception {
         SparePart sparePart = SparePart.builder()
@@ -144,9 +144,9 @@ class SparePartControllerTest {
                 .andExpect(jsonPath("$.name").value("Nuevo"));
     }
 
-    // -------------------------
+
     // 404 NOT FOUND - PATCH /spare-parts/{id}
-    // -------------------------
+
     @Test
     void patchSparePart_nonExistingId_returns404() throws Exception {
         when(sparePartService.patch(anyLong(), any(Map.class)))
@@ -160,9 +160,9 @@ class SparePartControllerTest {
                 .andExpect(status().isNotFound());
     }
 
-    // -------------------------
+
     // 404 NOT FOUND - DELETE /spare-parts/{id}
-    // -------------------------
+
     @Test
     void deleteSparePart_nonExistingId_returns404() throws Exception {
         doThrow(new SparePartNotFoundException("Spare part not found"))

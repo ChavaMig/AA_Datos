@@ -21,7 +21,7 @@ public class TechnicianController {
         this.technicianService = technicianService;
     }
 
-    // ===================== GET (CON FILTRADO ) =====================
+    // GET (CON FILTRADO )
 
     @GetMapping
     public ResponseEntity<List<Technician>> getAll(
@@ -55,7 +55,7 @@ public class TechnicianController {
         return ResponseEntity.ok(technicianService.modify(id, technician));
     }
 
-    // ===================== PATCH =====================
+    //  PATCH
 
     @PatchMapping("/{id}")
     public ResponseEntity<Technician> patch(
@@ -81,7 +81,7 @@ public class TechnicianController {
         return new ResponseEntity<>(ex.getMessage(), HttpStatus.NOT_FOUND);
     }
 
-    // ===================== JPQL =====================
+    //  JPQL
 
     @GetMapping("/by-active/{active}")
     public ResponseEntity<List<Technician>> getByActive(

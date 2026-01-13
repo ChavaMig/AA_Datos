@@ -28,7 +28,7 @@ public class ClinicService {
         return clinicRepository.save(clinic);
     }
 
-    // ===================== GET CON FILTRADO =====================
+    //  GET CON FILTRADO
 
     public List<ClinicOutDto> findWithFilters(
             String name,
@@ -57,14 +57,14 @@ public class ClinicService {
 
     public void delete(long id) throws ClinicNotFoundException {
         Clinic clinic = clinicRepository.findById(id)
-                .orElseThrow(() -> new ClinicNotFoundException("Clinica no encontrada"));
+                .orElseThrow(() -> new ClinicNotFoundException("Clinic not found"));
 
         clinicRepository.delete(clinic);
     }
 
     public ClinicDto findById(long id) throws ClinicNotFoundException {
         Clinic clinic = clinicRepository.findById(id)
-                .orElseThrow(() -> new ClinicNotFoundException("Clinica no encontrada"));
+                .orElseThrow(() -> new ClinicNotFoundException("Clinic not found"));
 
         return modelMapper.map(clinic, ClinicDto.class);
     }
@@ -73,7 +73,7 @@ public class ClinicService {
             throws ClinicNotFoundException {
 
         Clinic existingClinic = clinicRepository.findById(id)
-                .orElseThrow(() -> new ClinicNotFoundException("Clinica no encontrada"));
+                .orElseThrow(() -> new ClinicNotFoundException("Clinic not found"));
 
         modelMapper.map(clinic, existingClinic);
         existingClinic.setId(id);
@@ -81,13 +81,13 @@ public class ClinicService {
         return clinicRepository.save(existingClinic);
     }
 
-    // ===================== PATCH =====================
+    // PATCH
 
     public Clinic patch(long id, Map<String, Object> updates)
             throws ClinicNotFoundException {
 
         Clinic clinic = clinicRepository.findById(id)
-                .orElseThrow(() -> new ClinicNotFoundException("Clinica no encontrada"));
+                .orElseThrow(() -> new ClinicNotFoundException("Clinic not found"));
 
         updates.forEach((key, value) -> {
             Field field = ReflectionUtils.findField(Clinic.class, key);
@@ -100,7 +100,8 @@ public class ClinicService {
         return clinicRepository.save(clinic);
     }
 
-    // ⚠️ JPQL se mantiene para OTRO punto del trabajo
+    // JPQL
+
     public List<Clinic> findByName(String name) {
         return clinicRepository.findByNameContaining(name);
     }

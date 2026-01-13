@@ -24,7 +24,7 @@ public class TicketService {
     @Autowired
     ModelMapper modelMapper;
 
-    // ===================== CRUD =====================
+    //  CRUD
 
     public Ticket add(Ticket ticket) {
         return ticketRepository.save(ticket);
@@ -37,7 +37,7 @@ public class TicketService {
         ticketRepository.delete(ticket);
     }
 
-    // ===================== GET CON FILTRADO =====================
+    //  GET CON FILTRADO
 
     public List<TicketOutDto> findWithFilters(
             String status,
@@ -64,7 +64,7 @@ public class TicketService {
         );
     }
 
-    // ===================== JPQL (NUEVO) =====================
+    //  JPQL
 
     public List<TicketOutDto> findByStatusJPQL(String status) {
 
@@ -90,13 +90,24 @@ public class TicketService {
         Ticket existingTicket = ticketRepository.findById(id)
                 .orElseThrow(() -> new TicketNotFoundException("Ticket not found"));
 
-        modelMapper.map(ticket, existingTicket);
-        existingTicket.setId(id);
+        existingTicket.setDescription(ticket.getDescription());
+        existingTicket.setStatus(ticket.getStatus());
+        existingTicket.setOpenDate(ticket.getOpenDate());
+        existingTicket.setCloseDate(ticket.getCloseDate());
+
+        if (ticket.getMachine() != null) {
+            existingTicket.setMachine(ticket.getMachine());
+        }
+
+        if (ticket.getTechnician() != null) {
+            existingTicket.setTechnician(ticket.getTechnician());
+        }
 
         return ticketRepository.save(existingTicket);
     }
 
-    // ===================== PATCH =====================
+
+    //  PATCH
 
     public Ticket patch(long id, Map<String, Object> updates)
             throws TicketNotFoundException {

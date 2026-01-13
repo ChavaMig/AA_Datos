@@ -16,7 +16,8 @@ public interface MachineRepository extends JpaRepository<Machine, Long> {
     @Query("SELECT m FROM Machine m WHERE m.manufacturer = :manufacturer")
     List<Machine> findByManufacturer(@Param("manufacturer") String manufacturer);
 
-    // ===================== JPQL - Machines by Clinic =====================
+    //  JPQL - Machines by Clinic
+
     @Query("SELECT m FROM Machine m WHERE m.clinic.id = :clinicId")
     List<Machine> findByClinicId(@Param("clinicId") Long clinicId);
 }

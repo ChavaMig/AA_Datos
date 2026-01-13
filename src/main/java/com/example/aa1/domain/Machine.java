@@ -30,6 +30,7 @@ public class Machine {
     private String manufacturer;
 
     //Asignar maquinas a clinicas mediante el nombre
+
     @ManyToOne
     @JoinColumn(name = "clinic_id")
     @JsonBackReference // Evita volver a la clínica y entrar en bucle

@@ -24,7 +24,7 @@ public class TicketController {
     @Autowired
     private TicketService ticketService;
 
-    // ===================== GET (CON FILTRADO) =====================
+    //  GET (CON FILTRADO)
 
     @GetMapping("/tickets")
     public ResponseEntity<List<TicketOutDto>> getAll(
@@ -37,7 +37,8 @@ public class TicketController {
         );
     }
 
-    // ===================== JPQL (NUEVO) =====================
+    //  JPQL
+
     @GetMapping("/tickets/jpql/by-status")
     public ResponseEntity<List<TicketOutDto>> getByStatusJPQL(
             @RequestParam String status) {
@@ -55,7 +56,7 @@ public class TicketController {
         return ResponseEntity.ok(ticketDto);
     }
 
-    // ===================== POST =====================
+    //  POST
 
     @PostMapping("/tickets")
     public ResponseEntity<Ticket> addTicket(
@@ -65,7 +66,7 @@ public class TicketController {
         return new ResponseEntity<>(newTicket, HttpStatus.CREATED);
     }
 
-    // ===================== PUT =====================
+    //  PUT
 
     @PutMapping("/tickets/{id}")
     public ResponseEntity<Ticket> modifyTicket(
@@ -77,7 +78,7 @@ public class TicketController {
         return ResponseEntity.ok(updatedTicket);
     }
 
-    // ===================== PATCH =====================
+    //  PATCH
 
     @PatchMapping("/tickets/{id}")
     public ResponseEntity<Ticket> patchTicket(
@@ -89,7 +90,7 @@ public class TicketController {
         return ResponseEntity.ok(updatedTicket);
     }
 
-    // ===================== DELETE =====================
+    //  DELETE
 
     @DeleteMapping("/tickets/{id}")
     public ResponseEntity<Void> deleteTicket(@PathVariable long id)
@@ -99,7 +100,7 @@ public class TicketController {
         return ResponseEntity.noContent().build();
     }
 
-    // ===================== EXCEPTIONS =====================
+    //  EXCEPTIONS
 
     @ExceptionHandler(TicketNotFoundException.class)
     public ResponseEntity<ErrorResponse> handleException(TicketNotFoundException tnfe) {

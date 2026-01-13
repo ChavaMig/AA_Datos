@@ -16,7 +16,7 @@ public class TicketOutDto {
     private Long technicianId;
     private String technicianName;
 
-    // ===== GETTERS & SETTERS =====
+    //  GETTERS Y SETTERS
 
     public Long getId() {
         return id;

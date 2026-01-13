@@ -26,7 +26,7 @@ class SparePartServiceTest {
     @InjectMocks
     private SparePartService sparePartService;
 
-    // ---------- FIND ALL ----------
+    //  FIND ALL
 
     @Test
     void findAll_returnsList() {
@@ -39,7 +39,7 @@ class SparePartServiceTest {
         verify(sparePartRepository).findAll();
     }
 
-    // ---------- FIND BY ID ----------
+    //  FIND BY ID
 
     @Test
     void findById_existing_returnsSparePart() throws SparePartNotFoundException {
@@ -60,7 +60,7 @@ class SparePartServiceTest {
                 () -> sparePartService.findById(1L));
     }
 
-    // ---------- ADD ----------
+    //  ADD
 
     @Test
     void add_validSparePart_savesSparePart() {
@@ -73,7 +73,7 @@ class SparePartServiceTest {
         verify(sparePartRepository).save(sp);
     }
 
-    // ---------- MODIFY ----------
+    //  MODIFY
 
     @Test
     void modify_existing_updatesFields() throws SparePartNotFoundException {
@@ -111,7 +111,7 @@ class SparePartServiceTest {
                 () -> sparePartService.modify(1L, new SparePart()));
     }
 
-    // ---------- PATCH ----------
+    //  PATCH
 
     @Test
     void patch_existing_updatesFields() throws SparePartNotFoundException {
@@ -146,7 +146,7 @@ class SparePartServiceTest {
                 () -> sparePartService.patch(1L, Map.of()));
     }
 
-    // ---------- DELETE ----------
+    //  DELETE
 
     @Test
     void delete_existing_deletesSparePart() throws SparePartNotFoundException {

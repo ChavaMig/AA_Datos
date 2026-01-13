@@ -30,7 +30,7 @@ class TechnicianControllerTest {
     @Autowired
     private ObjectMapper objectMapper;
 
-    // ---------- GET ALL ----------
+    //  GET ALL
 
     @Test
     void getAll_returns200() throws Exception {
@@ -42,7 +42,7 @@ class TechnicianControllerTest {
                 .andExpect(jsonPath("$.length()").value(2));
     }
 
-    // ---------- GET BY ID ----------
+    //  GET technicians/ {id}
 
     @Test
     void get_existingId_returns200() throws Exception {
@@ -64,7 +64,7 @@ class TechnicianControllerTest {
                 .andExpect(status().isNotFound());
     }
 
-    // ---------- POST ----------
+    //  POST
 
     @Test
     void add_validTechnician_returns201() throws Exception {
@@ -95,7 +95,7 @@ class TechnicianControllerTest {
                 .andExpect(status().isBadRequest());
     }
 
-    // ---------- PUT ----------
+    //  PUT
 
     @Test
     void modify_existingTechnician_returns200() throws Exception {
@@ -122,7 +122,7 @@ class TechnicianControllerTest {
                 .andExpect(status().isNotFound());
     }
 
-    // ---------- PATCH ----------
+    //  PATCH
 
     @Test
     void patch_existingTechnician_returns200() throws Exception {
@@ -150,7 +150,7 @@ class TechnicianControllerTest {
                 .andExpect(status().isNotFound());
     }
 
-    // ---------- DELETE ----------
+    //  DELETE
 
     @Test
     void delete_existingTechnician_returns204() throws Exception {

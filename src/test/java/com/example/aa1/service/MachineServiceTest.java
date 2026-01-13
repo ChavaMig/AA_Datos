@@ -25,9 +25,9 @@ class MachineServiceTest {
     @InjectMocks
     private MachineService machineService;
 
-    // -------------------------
+
     // CREATE
-    // -------------------------
+
     @Test
     void add_validMachine_savesMachine() {
         Machine machine = Machine.builder()
@@ -45,9 +45,9 @@ class MachineServiceTest {
         verify(machineRepository).save(machine);
     }
 
-    // -------------------------
+
     // READ ALL
-    // -------------------------
+
     @Test
     void findAll_returnsMachineList() {
         List<Machine> machines = List.of(
@@ -64,9 +64,9 @@ class MachineServiceTest {
         verify(machineRepository).findAll();
     }
 
-    // -------------------------
+
     // READ BY ID (OK)
-    // -------------------------
+
     @Test
     void findById_existingMachine_returnsMachine() throws Exception {
         Machine machine = Machine.builder()
@@ -86,9 +86,9 @@ class MachineServiceTest {
         verify(machineRepository).findById(1L);
     }
 
-    // -------------------------
+
     // READ BY ID (NOT FOUND)
-    // -------------------------
+
     @Test
     void findById_nonExistingMachine_throwsException() {
         when(machineRepository.findById(99L))
@@ -98,9 +98,9 @@ class MachineServiceTest {
                 () -> machineService.findById(99L));
     }
 
-    // -------------------------
+
     // UPDATE (PUT) OK
-    // -------------------------
+
     @Test
     void modify_existingMachine_updatesMachine() throws Exception {
         Machine existing = Machine.builder()
@@ -129,9 +129,9 @@ class MachineServiceTest {
         verify(machineRepository).save(existing);
     }
 
-    // -------------------------
+
     // UPDATE (PUT) NOT FOUND
-    // -------------------------
+
     @Test
     void modify_nonExistingMachine_throwsException() {
         when(machineRepository.findById(99L))
@@ -141,9 +141,9 @@ class MachineServiceTest {
                 () -> machineService.modify(99L, new Machine()));
     }
 
-    // -------------------------
+
     // UPDATE (PATCH) OK
-    // -------------------------
+
     @Test
     void patch_existingMachine_updatesFields() throws Exception {
         Machine machine = Machine.builder()
@@ -170,9 +170,9 @@ class MachineServiceTest {
         verify(machineRepository).save(machine);
     }
 
-    // -------------------------
+
     // UPDATE (PATCH) NOT FOUND
-    // -------------------------
+
     @Test
     void patch_nonExistingMachine_throwsException() {
         when(machineRepository.findById(99L))
@@ -182,9 +182,9 @@ class MachineServiceTest {
                 () -> machineService.patch(99L, Map.of("model", "X")));
     }
 
-    // -------------------------
+
     // DELETE (OK)
-    // -------------------------
+
     @Test
     void delete_existingMachine_deletesMachine() throws Exception {
         Machine machine = Machine.builder()
@@ -200,9 +200,9 @@ class MachineServiceTest {
         verify(machineRepository).delete(machine);
     }
 
-    // -------------------------
+
     // DELETE (NOT FOUND)
-    // -------------------------
+
     @Test
     void delete_nonExistingMachine_throwsException() {
         when(machineRepository.findById(99L))

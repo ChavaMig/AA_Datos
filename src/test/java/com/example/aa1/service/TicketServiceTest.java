@@ -41,7 +41,7 @@ class TicketServiceTest {
         ticketService.modelMapper = modelMapper;
     }
 
-    // ===================== ADD =====================
+    // ADD
 
     @Test
     void add_savesTicket() {
@@ -55,7 +55,7 @@ class TicketServiceTest {
         verify(ticketRepository).save(ticket);
     }
 
-    // ===================== FIND ALL =====================
+    // FIND ALL
 
     @Test
     void findAllOut_returnsDtos() {
@@ -67,7 +67,7 @@ class TicketServiceTest {
         assertEquals(1, result.size());
     }
 
-    // ===================== FIND BY ID =====================
+    //  FIND BY ID
 
     @Test
     void findByIdDto_existing_returnsDto() throws Exception {
@@ -88,7 +88,7 @@ class TicketServiceTest {
                 () -> ticketService.findByIdDto(1L));
     }
 
-    // ===================== MODIFY =====================
+    //  MODIFY
 
     @Test
     void modify_existing_updatesTicket() throws Exception {
@@ -106,7 +106,7 @@ class TicketServiceTest {
         assertEquals("CLOSED", result.getStatus());
     }
 
-    // ===================== PATCH =====================
+    //  PATCH
 
     @Test
     void patch_existing_updatesField() throws Exception {
@@ -123,7 +123,7 @@ class TicketServiceTest {
         assertEquals("CLOSED", result.getStatus());
     }
 
-    // ===================== DELETE =====================
+    // DELETE
 
     @Test
     void delete_existing_deletesTicket() throws Exception {
@@ -146,7 +146,7 @@ class TicketServiceTest {
                 () -> ticketService.delete(1L));
     }
 
-    // ===================== EXTRA =====================
+    // EXTRA
 
     @Test
     void findByTechnicianOut_returnsDtos() {
@@ -159,7 +159,6 @@ class TicketServiceTest {
         assertEquals(1, result.size());
     }
 
-    // ===================== HELPER =====================
 
     private Ticket buildTicket() {
         Ticket ticket = new Ticket();

@@ -19,7 +19,7 @@ public class SparePartService {
         this.sparePartRepository = sparePartRepository;
     }
 
-    // ===================== GET CON FILTRADO =====================
+    //  GET CON FILTRADO
 
     public List<SparePart> findWithFilters(
             String name,
@@ -62,7 +62,7 @@ public class SparePartService {
         return sparePartRepository.save(sparePart);
     }
 
-    // ===================== PATCH =====================
+    //  PATCH
 
     public SparePart patch(Long id, Map<String, Object> updates)
             throws SparePartNotFoundException {

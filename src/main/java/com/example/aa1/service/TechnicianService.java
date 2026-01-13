@@ -27,7 +27,7 @@ public class TechnicianService {
         return technicianRepository.save(technician);
     }
 
-    // ===================== GET CON FILTRADO =====================
+    //  GET CON FILTRADO
 
     public List<Technician> findWithFilters(
             String name,
@@ -68,7 +68,7 @@ public class TechnicianService {
         return technicianRepository.save(existing);
     }
 
-    // ===================== PATCH =====================
+    // PATCH
 
     public Technician patch(long id, Map<String, Object> updates)
             throws TechnicianNotFoundException {
@@ -94,7 +94,7 @@ public class TechnicianService {
         technicianRepository.delete(technician);
     }
 
-    // ===================== JPQL =====================
+    //  JPQL
 
     public List<Technician> findByActive(boolean active) {
         return technicianRepository.findByActive(active);

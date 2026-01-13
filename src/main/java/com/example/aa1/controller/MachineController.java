@@ -20,7 +20,7 @@ public class MachineController {
         this.machineService = machineService;
     }
 
-    // ===================== GET (CON FILTRADO REAL) =====================
+    //  GET (CON FILTRADO )
 
     @GetMapping("/machines")
     public ResponseEntity<List<Machine>> getAll(
@@ -53,7 +53,7 @@ public class MachineController {
         return ResponseEntity.ok(machineService.modify(id, machine));
     }
 
-    // ===================== PATCH =====================
+    //  PATCH
 
     @PatchMapping("/machines/{id}")
     public ResponseEntity<Machine> patch(
@@ -81,7 +81,7 @@ public class MachineController {
                 .body(Map.of("error", ex.getMessage()));
     }
 
-    // ===================== JPQL =====================
+    //  JPQL
 
     @GetMapping("/machines/by-clinic/{clinicId}")
     public ResponseEntity<List<Machine>> getByClinic(

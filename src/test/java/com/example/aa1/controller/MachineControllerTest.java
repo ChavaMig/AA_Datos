@@ -35,9 +35,9 @@ class MachineControllerTest {
     @Autowired
     private ObjectMapper objectMapper;
 
-    // -------------------------
+
     // 200 OK - GET /machines
-    // -------------------------
+
     @Test
     void getAllMachines_returns200() throws Exception {
         when(machineService.findAll())
@@ -47,9 +47,10 @@ class MachineControllerTest {
                 .andExpect(status().isOk());
     }
 
-    // -------------------------
-    // 200 OK - GET /machines/{id}
-    // -------------------------
+
+
+    // 200 OK - GET /machines {id}
+
     @Test
     void getMachine_existingId_returns200() throws Exception {
         Machine machine = Machine.builder()
@@ -64,9 +65,9 @@ class MachineControllerTest {
                 .andExpect(jsonPath("$.serialNumber").value("SN123"));
     }
 
-    // -------------------------
+
     // 404 NOT FOUND - GET /machines/{id}
-    // -------------------------
+
     @Test
     void getMachine_nonExistingId_returns404() throws Exception {
         when(machineService.findById(99L))
@@ -78,9 +79,9 @@ class MachineControllerTest {
 
 
 
-    // -------------------------
+
     // 400 BAD REQUEST - POST /machines
-    // -------------------------
+
     @Test
     void addMachine_invalidBody_returns400() throws Exception {
         // serialNumber es obligatorio → lo omitimos
@@ -95,9 +96,9 @@ class MachineControllerTest {
                 .andExpect(status().isBadRequest());
     }
 
-    // -------------------------
+
     // 201 CREATED - POST /machines
-    // -------------------------
+
     @Test
     void addMachine_validBody_returns201() throws Exception {
         Machine machine = Machine.builder()
@@ -116,9 +117,9 @@ class MachineControllerTest {
                 .andExpect(jsonPath("$.serialNumber").value("SN123"));
     }
 
-    // -------------------------
+
     // 200 OK - PATCH /machines/{id}
-    // -------------------------
+
     @Test
     void patchMachine_existingId_returns200() throws Exception {
         Machine machine = Machine.builder()
@@ -138,9 +139,9 @@ class MachineControllerTest {
                 .andExpect(jsonPath("$.serialNumber").value("NEW"));
     }
 
-    // -------------------------
+
     // 404 NOT FOUND - PATCH /machines/{id}
-    // -------------------------
+
     @Test
     void patchMachine_nonExistingId_returns404() throws Exception {
         when(machineService.patch(anyLong(), any(Map.class)))
@@ -154,9 +155,9 @@ class MachineControllerTest {
                 .andExpect(status().isNotFound());
     }
 
-    // -------------------------
+
     // 404 NOT FOUND - DELETE /machines/{id}
-    // -------------------------
+
     @Test
     void deleteMachine_nonExistingId_returns404() throws Exception {
         doThrow(new MachineNotFoundException("Machine not found"))

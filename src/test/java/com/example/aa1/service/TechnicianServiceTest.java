@@ -29,7 +29,7 @@ class TechnicianServiceTest {
     @InjectMocks
     private TechnicianService technicianService;
 
-    // ---------- ADD ----------
+    //  ADD
 
     @Test
     void add_returnsSavedTechnician() {
@@ -49,7 +49,7 @@ class TechnicianServiceTest {
         verify(technicianRepository).save(tech);
     }
 
-    // ---------- FIND ALL ----------
+    //  FIND ALL
 
     @Test
     void findAll_returnsTechnicianList() {
@@ -66,7 +66,7 @@ class TechnicianServiceTest {
         verify(technicianRepository).findAll();
     }
 
-    // ---------- FIND BY ID ----------
+    //  FIND BY ID
 
     @Test
     void findById_existingId_returnsTechnician() throws TechnicianNotFoundException {
@@ -93,7 +93,7 @@ class TechnicianServiceTest {
                 () -> technicianService.findById(1L));
     }
 
-    // ---------- MODIFY ----------
+    //  MODIFY
 
     @Test
     void modify_existingTechnician_updatesTechnician() throws TechnicianNotFoundException {
@@ -133,7 +133,7 @@ class TechnicianServiceTest {
                 () -> technicianService.modify(1L, new Technician()));
     }
 
-    // ---------- PATCH ----------
+    // PATCH
 
     @Test
     void patch_existingTechnician_updatesFields() throws TechnicianNotFoundException {
@@ -171,7 +171,7 @@ class TechnicianServiceTest {
                 () -> technicianService.patch(1L, Map.of("name", "Test")));
     }
 
-    // ---------- DELETE ----------
+    //  DELETE
 
     @Test
     void delete_existingTechnician_deletesTechnician() throws TechnicianNotFoundException {

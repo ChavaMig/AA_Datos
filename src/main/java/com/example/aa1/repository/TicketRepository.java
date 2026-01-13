@@ -12,7 +12,8 @@ public interface TicketRepository extends JpaRepository<Ticket, Long> {
     @Query("SELECT t FROM Ticket t WHERE t.technician.id = :techId")
     List<Ticket> findByTechnicianId(@Param("techId") Long techId);
 
-    //  JPQL
+    //  JPQL ticket by status
+
     @Query("SELECT t FROM Ticket t WHERE t.status = :status")
     List<Ticket> findByStatusJPQL(@Param("status") String status);
 }

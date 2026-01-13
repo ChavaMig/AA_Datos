@@ -23,7 +23,7 @@ public class MachineService {
         return machineRepository.save(machine);
     }
 
-    // ===================== GET CON FILTRADO =====================
+    //  GET CON FILTRADO
 
     public List<Machine> findWithFilters(
             String serialNumber,
@@ -71,7 +71,7 @@ public class MachineService {
         return machineRepository.save(existingMachine);
     }
 
-    // ===================== PATCH =====================
+    //  PATCH
 
     public Machine patch(Long id, Map<String, Object> updates)
             throws MachineNotFoundException {
@@ -97,7 +97,7 @@ public class MachineService {
         machineRepository.delete(machine);
     }
 
-    // ===================== JPQL =====================
+    //  JPQL
 
     public List<Machine> findByClinicId(Long clinicId) {
         return machineRepository.findByClinicId(clinicId);

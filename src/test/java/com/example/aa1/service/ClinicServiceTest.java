@@ -98,7 +98,8 @@ class ClinicServiceTest {
 
         when(clinicRepository.findAll()).thenReturn(clinics);
 
-        // 👇 CLAVE: mock correcto del modelMapper
+
+
         when(modelMapper.map(anyList(), any(java.lang.reflect.Type.class)))
                 .thenReturn(Collections.emptyList());
 
@@ -136,9 +137,9 @@ class ClinicServiceTest {
         verify(clinicRepository).save(existing);
     }
 
-    // -------------------------
+
     // UPDATE (PUT) NOT FOUND
-    // -------------------------
+
     @Test
     void modify_nonExistingClinic_throwsException() {
         when(clinicRepository.findById(99L))
@@ -148,9 +149,9 @@ class ClinicServiceTest {
                 () -> clinicService.modify(99L, new Clinic()));
     }
 
-    // -------------------------
+
     // UPDATE (PATCH) OK
-    // -------------------------
+
     @Test
     void patch_existingClinic_updatesFields() throws Exception {
         Clinic clinic = Clinic.builder()
@@ -173,9 +174,9 @@ class ClinicServiceTest {
         verify(clinicRepository).save(clinic);
     }
 
-    // -------------------------
+
     // UPDATE (PATCH) NOT FOUND
-    // -------------------------
+
     @Test
     void patch_nonExistingClinic_throwsException() {
         when(clinicRepository.findById(99L))
@@ -185,9 +186,9 @@ class ClinicServiceTest {
                 () -> clinicService.patch(99L, Map.of("name", "X")));
     }
 
-    // -------------------------
+
     // DELETE OK
-    // -------------------------
+
     @Test
     void delete_existingClinic_deletesClinic() throws Exception {
         Clinic clinic = Clinic.builder()
@@ -203,9 +204,9 @@ class ClinicServiceTest {
         verify(clinicRepository).delete(clinic);
     }
 
-    // -------------------------
+
     // DELETE NOT FOUND
-    // -------------------------
+
     @Test
     void delete_nonExistingClinic_throwsException() {
         when(clinicRepository.findById(99L))

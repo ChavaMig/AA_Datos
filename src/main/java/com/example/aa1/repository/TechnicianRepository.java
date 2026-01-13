@@ -11,7 +11,8 @@ import java.util.List;
 @Repository
 public interface TechnicianRepository extends JpaRepository<Technician, Long> {
 
-    // ===================== JPQL =====================
+    //  JPQL Technician by active
+
     @Query("SELECT t FROM Technician t WHERE t.active = :active")
     List<Technician> findByActive(@Param("active") boolean active);
 }

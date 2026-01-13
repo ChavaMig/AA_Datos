@@ -26,7 +26,7 @@ public class TicketDto {
     @NotNull(message = "technicianId is mandatory")
     private Long technicianId;
 
-    // ===== GETTERS & SETTERS =====
+    // GETTERS Y SETTERS
 
     public Long getId() {
         return id;

@@ -24,7 +24,7 @@ public class SparePartController {
         this.sparePartService = sparePartService;
     }
 
-    // ===================== GET (CON FILTRADO REAL) =====================
+    //  GET (CON FILTRADO )
 
     @GetMapping
     public ResponseEntity<List<SparePart>> getAll(
@@ -58,7 +58,7 @@ public class SparePartController {
         return ResponseEntity.ok(sparePartService.modify(id, sparePart));
     }
 
-    // ===================== PATCH =====================
+    //  PATCH
 
     @PatchMapping("/{id}")
     public ResponseEntity<SparePart> patch(
@@ -77,7 +77,7 @@ public class SparePartController {
         return ResponseEntity.noContent().build();
     }
 
-    // ===================== EXCEPTIONS =====================
+    //  EXCEPTIONS
 
     @ExceptionHandler(SparePartNotFoundException.class)
     public ResponseEntity<Map<String, String>> handleNotFound(

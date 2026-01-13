@@ -24,7 +24,7 @@ public class ClinicController {
     @Autowired
     private ClinicService clinicService;
 
-    // ===================== GET (CON FILTRADO REAL) =====================
+    //  GET (CON FILTRADO )
 
     @GetMapping("/clinics")
     public ResponseEntity<List<ClinicOutDto>> getAll(
@@ -61,7 +61,7 @@ public class ClinicController {
         return ResponseEntity.ok(newClinic);
     }
 
-    // ===================== PATCH =====================
+    //  PATCH
 
     @PatchMapping("/clinics/{id}")
     public ResponseEntity<Clinic> patchClinic(
@@ -81,7 +81,7 @@ public class ClinicController {
         return ResponseEntity.noContent().build();
     }
 
-    // ===================== EXCEPTIONS =====================
+    //  EXCEPTIONS
 
     @ExceptionHandler(ClinicNotFoundException.class)
     public ResponseEntity<ErrorResponse> handleException(
