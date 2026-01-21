@@ -33,11 +33,11 @@ class TicketControllerTest {
     @Autowired
     private ObjectMapper objectMapper;
 
-    //  GET
+    // GET
 
     @Test
     void getAll_returns200() throws Exception {
-        when(ticketService.findAllOut())
+        when(ticketService.findWithFilters(null, null, null))
                 .thenReturn(List.of(new TicketOutDto()));
 
         mockMvc.perform(get("/tickets"))
@@ -68,18 +68,7 @@ class TicketControllerTest {
                 .andExpect(status().isNotFound());
     }
 
-    // ===================== GET BY TECHNICIAN =====================
-
-    @Test
-    void getByTechnician_returns200() throws Exception {
-        when(ticketService.findByTechnicianOut(1L))
-                .thenReturn(List.of(new TicketOutDto()));
-
-        mockMvc.perform(get("/tickets/by-technician/1"))
-                .andExpect(status().isOk());
-    }
-
-    // ===================== POST =====================
+    //  POST
 
     @Test
     void addTicket_valid_returns201() throws Exception {
@@ -104,7 +93,7 @@ class TicketControllerTest {
                 .andExpect(status().isBadRequest());
     }
 
-    // ===================== PUT =====================
+    //  PUT
 
     @Test
     void modifyTicket_existing_returns200() throws Exception {
@@ -132,7 +121,7 @@ class TicketControllerTest {
                 .andExpect(status().isNotFound());
     }
 
-    // ===================== PATCH =====================
+    //  PATCH
 
     @Test
     void patchTicket_existing_returns200() throws Exception {
@@ -160,7 +149,7 @@ class TicketControllerTest {
                 .andExpect(status().isNotFound());
     }
 
-    // ===================== DELETE =====================
+    // DELETE
 
     @Test
     void deleteTicket_existing_returns204() throws Exception {
@@ -179,7 +168,7 @@ class TicketControllerTest {
                 .andExpect(status().isNotFound());
     }
 
-    // ===================== HELPER =====================
+    //  HELPER
 
     private Ticket buildTicket() {
         Ticket ticket = new Ticket();
@@ -190,3 +179,4 @@ class TicketControllerTest {
         return ticket;
     }
 }
+

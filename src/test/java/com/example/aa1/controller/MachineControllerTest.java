@@ -144,7 +144,7 @@ class MachineControllerTest {
 
     @Test
     void patchMachine_nonExistingId_returns404() throws Exception {
-        when(machineService.patch(anyLong(), any(Map.class)))
+        when(machineService.patch(anyLong(), any (Map.class)))
                 .thenThrow(new MachineNotFoundException("Machine not found"));
 
         mockMvc.perform(patch("/machines/99")

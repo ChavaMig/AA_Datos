@@ -41,7 +41,7 @@ class TicketServiceTest {
         ticketService.modelMapper = modelMapper;
     }
 
-    // ADD
+    //  POST
 
     @Test
     void add_savesTicket() {
@@ -55,19 +55,20 @@ class TicketServiceTest {
         verify(ticketRepository).save(ticket);
     }
 
-    // FIND ALL
+    // GET WITH FILTERS
 
     @Test
-    void findAllOut_returnsDtos() {
+    void findWithFilters_noFilters_returnsDtos() {
         when(ticketRepository.findAll())
                 .thenReturn(List.of(buildTicket()));
 
-        List<TicketOutDto> result = ticketService.findAllOut();
+        List<TicketOutDto> result =
+                ticketService.findWithFilters(null, null, null);
 
         assertEquals(1, result.size());
     }
 
-    //  FIND BY ID
+    // GET BY ID
 
     @Test
     void findByIdDto_existing_returnsDto() throws Exception {
@@ -88,7 +89,7 @@ class TicketServiceTest {
                 () -> ticketService.findByIdDto(1L));
     }
 
-    //  MODIFY
+    // PUT
 
     @Test
     void modify_existing_updatesTicket() throws Exception {
@@ -123,7 +124,7 @@ class TicketServiceTest {
         assertEquals("CLOSED", result.getStatus());
     }
 
-    // DELETE
+    //  DELETE
 
     @Test
     void delete_existing_deletesTicket() throws Exception {
@@ -146,19 +147,7 @@ class TicketServiceTest {
                 () -> ticketService.delete(1L));
     }
 
-    // EXTRA
-
-    @Test
-    void findByTechnicianOut_returnsDtos() {
-        when(ticketRepository.findByTechnicianId(1L))
-                .thenReturn(List.of(buildTicket()));
-
-        List<TicketOutDto> result =
-                ticketService.findByTechnicianOut(1L);
-
-        assertEquals(1, result.size());
-    }
-
+    //  HELPER
 
     private Ticket buildTicket() {
         Ticket ticket = new Ticket();

@@ -28,8 +28,7 @@ class ClinicServiceTest {
     @InjectMocks
     private ClinicService clinicService;
 
-
-    // CREATE
+    //  CREATE
 
     @Test
     void add_validClinic_savesClinic() {
@@ -47,7 +46,7 @@ class ClinicServiceTest {
         verify(clinicRepository).save(clinic);
     }
 
-    // READ BY ID (OK)
+    //  GET BY ID
 
     @Test
     void findById_existingClinic_returnsDto() throws Exception {
@@ -74,9 +73,6 @@ class ClinicServiceTest {
         verify(clinicRepository).findById(1L);
     }
 
-
-    // READ BY ID (NOT FOUND)
-
     @Test
     void findById_nonExistingClinic_throwsException() {
         when(clinicRepository.findById(99L))
@@ -86,11 +82,10 @@ class ClinicServiceTest {
                 () -> clinicService.findById(99L));
     }
 
-
-    // READ ALL
+    //  GET WITH FILTERS
 
     @Test
-    void findAll_returnsClinicOutDtoList() {
+    void findWithFilters_noFilters_returnsClinicOutDtoList() {
         List<Clinic> clinics = List.of(
                 Clinic.builder().id(1L).name("A").build(),
                 Clinic.builder().id(2L).name("B").build()
@@ -98,20 +93,16 @@ class ClinicServiceTest {
 
         when(clinicRepository.findAll()).thenReturn(clinics);
 
-
-
         when(modelMapper.map(anyList(), any(java.lang.reflect.Type.class)))
                 .thenReturn(Collections.emptyList());
 
-        var result = clinicService.findAll();
+        var result = clinicService.findWithFilters(null, null, null);
 
         assertNotNull(result);
         verify(clinicRepository).findAll();
     }
 
-
-
-    // UPDATE (PUT) OK
+    //  PUT
 
     @Test
     void modify_existingClinic_updatesClinic() throws Exception {
@@ -137,9 +128,6 @@ class ClinicServiceTest {
         verify(clinicRepository).save(existing);
     }
 
-
-    // UPDATE (PUT) NOT FOUND
-
     @Test
     void modify_nonExistingClinic_throwsException() {
         when(clinicRepository.findById(99L))
@@ -149,8 +137,7 @@ class ClinicServiceTest {
                 () -> clinicService.modify(99L, new Clinic()));
     }
 
-
-    // UPDATE (PATCH) OK
+    // PATCH
 
     @Test
     void patch_existingClinic_updatesFields() throws Exception {
@@ -174,9 +161,6 @@ class ClinicServiceTest {
         verify(clinicRepository).save(clinic);
     }
 
-
-    // UPDATE (PATCH) NOT FOUND
-
     @Test
     void patch_nonExistingClinic_throwsException() {
         when(clinicRepository.findById(99L))
@@ -186,8 +170,7 @@ class ClinicServiceTest {
                 () -> clinicService.patch(99L, Map.of("name", "X")));
     }
 
-
-    // DELETE OK
+    // DELETE
 
     @Test
     void delete_existingClinic_deletesClinic() throws Exception {
@@ -203,9 +186,6 @@ class ClinicServiceTest {
 
         verify(clinicRepository).delete(clinic);
     }
-
-
-    // DELETE NOT FOUND
 
     @Test
     void delete_nonExistingClinic_throwsException() {

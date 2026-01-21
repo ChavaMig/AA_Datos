@@ -34,7 +34,7 @@ class TechnicianControllerTest {
 
     @Test
     void getAll_returns200() throws Exception {
-        when(technicianService.findAll())
+        when(technicianService.findWithFilters(null, null, null))
                 .thenReturn(List.of(new Technician(), new Technician()));
 
         mockMvc.perform(get("/technicians"))
@@ -42,7 +42,7 @@ class TechnicianControllerTest {
                 .andExpect(jsonPath("$.length()").value(2));
     }
 
-    //  GET technicians/ {id}
+    // GET BY ID
 
     @Test
     void get_existingId_returns200() throws Exception {
