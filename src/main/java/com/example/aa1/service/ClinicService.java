@@ -28,7 +28,7 @@ public class ClinicService {
         return clinicRepository.save(clinic);
     }
 
-    //  GET CON FILTRADO
+    //  GET CON FILTRADO (@param/JPQL?)
 
     public List<ClinicOutDto> findWithFilters(
             String name,
