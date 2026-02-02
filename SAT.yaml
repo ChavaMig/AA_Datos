@@ -1,680 +1,2473 @@
 openapi: 3.0.3
 info:
-  title: AA1 - API Gestión de Clínicas y Mantenimiento
-  description: API REST para la gestión de clínicas, máquinas, técnicos, repuestos y tickets.
+  title: AA1 Medical Equipment Management API
+  description: API REST para gestionar clínicas, máquinas médicas, técnicos, repuestos y tickets de mantenimiento. Sistema completo de gestión de equipamiento médico y su mantenimiento.
   version: 1.0.0
+  contact:
+    name: AA1 Team
+    email: admin@aa1.com
 
 servers:
   - url: http://localhost:8080
-    description: Servidor local
+    description: Servidor de desarrollo local
 
-paths:
-
-
-  # CLINICS
-
-  /clinics:
-    get:
-      summary: Obtener clínicas con filtros
-      parameters:
-        - in: query
-          name: name
-          schema: { type: string }
-        - in: query
-          name: address
-          schema: { type: string }
-        - in: query
-          name: phone
-          schema: { type: string }
-      responses:
-        "200":
-          description: Lista de clínicas
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: "#/components/schemas/ClinicOutDto"
-        "500":
-          description: Error interno
-
-    post:
-      summary: Crear clínica
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/Clinic"
-      responses:
-        "201":
-          description: Clínica creada
-        "400":
-          description: Error de validación
-
-  /clinics/{id}:
-    get:
-      summary: Obtener clínica por ID
-      parameters:
-        - in: path
-          name: id
-          required: true
-          schema: { type: integer }
-      responses:
-        "200":
-          description: Clínica encontrada
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/ClinicDto"
-        "404":
-          description: Clínica no encontrada
-
-    put:
-      summary: Modificar clínica
-      parameters:
-        - in: path
-          name: id
-          required: true
-          schema: { type: integer }
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/Clinic"
-      responses:
-        "200":
-          description: Clínica modificada
-        "404":
-          description: Clínica no encontrada
-
-    patch:
-      summary: Modificar parcialmente clínica
-      parameters:
-        - in: path
-          name: id
-          required: true
-          schema: { type: integer }
-      requestBody:
-        content:
-          application/json:
-            schema:
-              type: object
-      responses:
-        "200":
-          description: Clínica actualizada
-        "404":
-          description: Clínica no encontrada
-
-    delete:
-      summary: Eliminar clínica
-      parameters:
-        - in: path
-          name: id
-          required: true
-          schema: { type: integer }
-      responses:
-        "204":
-          description: Clínica eliminada
-        "404":
-          description: Clínica no encontrada
-
-
-  # MACHINES
-
-  /machines:
-    get:
-      summary: Obtener máquinas con filtros
-      parameters:
-        - in: query
-          name: serialNumber
-          schema: { type: string }
-        - in: query
-          name: model
-          schema: { type: string }
-        - in: query
-          name: manufacturer
-          schema: { type: string }
-      responses:
-        "200":
-          description: Lista de máquinas
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: "#/components/schemas/Machine"
-
-    post:
-      summary: Crear máquina
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/Machine"
-      responses:
-        "201":
-          description: Máquina creada
-        "400":
-          description: Error de validación
-
-  /machines/{id}:
-    get:
-      summary: Obtener máquina por ID
-      parameters:
-        - in: path
-          name: id
-          required: true
-          schema: { type: integer }
-      responses:
-        "200":
-          description: Máquina encontrada
-        "404":
-          description: Máquina no encontrada
-
-    put:
-      summary: Modificar máquina
-      parameters:
-        - in: path
-          name: id
-          required: true
-          schema: { type: integer }
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/Machine"
-      responses:
-        "200":
-          description: Máquina modificada
-        "404":
-          description: Máquina no encontrada
-
-    patch:
-      summary: Modificar parcialmente máquina
-      parameters:
-        - in: path
-          name: id
-          required: true
-          schema: { type: integer }
-      requestBody:
-        content:
-          application/json:
-            schema:
-              type: object
-      responses:
-        "200":
-          description: Máquina actualizada
-        "404":
-          description: Máquina no encontrada
-
-    delete:
-      summary: Eliminar máquina
-      parameters:
-        - in: path
-          name: id
-          required: true
-          schema: { type: integer }
-      responses:
-        "204":
-          description: Máquina eliminada
-        "404":
-          description: Máquina no encontrada
-
-  /machines/by-clinic/{clinicId}:
-    get:
-      summary: Obtener máquinas por clínica (JPQL)
-      parameters:
-        - in: path
-          name: clinicId
-          required: true
-          schema: { type: integer }
-      responses:
-        "200":
-          description: Máquinas de la clínica
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: "#/components/schemas/Machine"
-
-
-  # SPARE PARTS
-
-  /spare-parts:
-    get:
-      summary: Obtener repuestos con filtros
-      parameters:
-        - in: query
-          name: name
-          schema: { type: string }
-        - in: query
-          name: manufacturer
-          schema: { type: string }
-        - in: query
-          name: price
-          schema: { type: number }
-      responses:
-        "200":
-          description: Lista de repuestos
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: "#/components/schemas/SparePart"
-
-    post:
-      summary: Crear repuesto
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/SparePart"
-      responses:
-        "201":
-          description: Repuesto creado
-        "400":
-          description: Error de validación
-
-  /spare-parts/{id}:
-    get:
-      summary: Obtener repuesto por ID
-      parameters:
-        - in: path
-          name: id
-          required: true
-          schema: { type: integer }
-      responses:
-        "200":
-          description: Repuesto encontrado
-        "404":
-          description: Repuesto no encontrado
-
-    put:
-      summary: Modificar repuesto
-      parameters:
-        - in: path
-          name: id
-          required: true
-          schema: { type: integer }
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/SparePart"
-      responses:
-        "200":
-          description: Repuesto modificado
-        "404":
-          description: Repuesto no encontrado
-
-    patch:
-      summary: Modificar parcialmente repuesto
-      parameters:
-        - in: path
-          name: id
-          required: true
-          schema: { type: integer }
-      requestBody:
-        content:
-          application/json:
-            schema:
-              type: object
-      responses:
-        "200":
-          description: Repuesto actualizado
-        "404":
-          description: Repuesto no encontrado
-
-    delete:
-      summary: Eliminar repuesto
-      parameters:
-        - in: path
-          name: id
-          required: true
-          schema: { type: integer }
-      responses:
-        "204":
-          description: Repuesto eliminado
-        "404":
-          description: Repuesto no encontrado
-
-
-  # TECHNICIANS
-
-  /technicians:
-    get:
-      summary: Obtener técnicos con filtros
-      parameters:
-        - in: query
-          name: name
-          schema: { type: string }
-        - in: query
-          name: email
-          schema: { type: string }
-        - in: query
-          name: active
-          schema: { type: boolean }
-      responses:
-        "200":
-          description: Lista de técnicos
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: "#/components/schemas/Technician"
-
-    post:
-      summary: Crear técnico
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/Technician"
-      responses:
-        "201":
-          description: Técnico creado
-        "400":
-          description: Error de validación
-
-  /technicians/{id}:
-    get:
-      summary: Obtener técnico por ID
-      parameters:
-        - in: path
-          name: id
-          required: true
-          schema: { type: integer }
-      responses:
-        "200":
-          description: Técnico encontrado
-        "404":
-          description: Técnico no encontrado
-
-    put:
-      summary: Modificar técnico
-      parameters:
-        - in: path
-          name: id
-          required: true
-          schema: { type: integer }
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/Technician"
-      responses:
-        "200":
-          description: Técnico modificado
-        "404":
-          description: Técnico no encontrado
-
-    patch:
-      summary: Modificar parcialmente técnico
-      parameters:
-        - in: path
-          name: id
-          required: true
-          schema: { type: integer }
-      requestBody:
-        content:
-          application/json:
-            schema:
-              type: object
-      responses:
-        "200":
-          description: Técnico actualizado
-        "404":
-          description: Técnico no encontrado
-
-    delete:
-      summary: Eliminar técnico
-      parameters:
-        - in: path
-          name: id
-          required: true
-          schema: { type: integer }
-      responses:
-        "204":
-          description: Técnico eliminado
-        "404":
-          description: Técnico no encontrado
-
-  /technicians/by-active/{active}:
-    get:
-      summary: Obtener técnicos activos o inactivos (JPQL)
-      parameters:
-        - in: path
-          name: active
-          required: true
-          schema: { type: boolean }
-      responses:
-        "200":
-          description: Técnicos filtrados
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: "#/components/schemas/Technician"
-
-
-  # TICKETS
-
-  /tickets:
-    get:
-      summary: Obtener tickets con filtros
-      parameters:
-        - in: query
-          name: status
-          schema: { type: string }
-        - in: query
-          name: machineId
-          schema: { type: integer }
-        - in: query
-          name: technicianId
-          schema: { type: integer }
-      responses:
-        "200":
-          description: Lista de tickets
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: "#/components/schemas/TicketOutDto"
-
-    post:
-      summary: Crear ticket
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/Ticket"
-      responses:
-        "201":
-          description: Ticket creado
-        "400":
-          description: Error de validación
-
-  /tickets/{id}:
-    get:
-      summary: Obtener ticket por ID
-      parameters:
-        - in: path
-          name: id
-          required: true
-          schema: { type: integer }
-      responses:
-        "200":
-          description: Ticket encontrado
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/TicketDto"
-        "404":
-          description: Ticket no encontrado
-
-    put:
-      summary: Modificar ticket
-      parameters:
-        - in: path
-          name: id
-          required: true
-          schema: { type: integer }
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/Ticket"
-      responses:
-        "200":
-          description: Ticket modificado
-        "404":
-          description: Ticket no encontrado
-
-    patch:
-      summary: Modificar parcialmente ticket
-      parameters:
-        - in: path
-          name: id
-          required: true
-          schema: { type: integer }
-      requestBody:
-        content:
-          application/json:
-            schema:
-              type: object
-      responses:
-        "200":
-          description: Ticket actualizado
-        "404":
-          description: Ticket no encontrado
-
-    delete:
-      summary: Eliminar ticket
-      parameters:
-        - in: path
-          name: id
-          required: true
-          schema: { type: integer }
-      responses:
-        "204":
-          description: Ticket eliminado
-        "404":
-          description: Ticket no encontrado
-
-  /tickets/jpql/by-status:
-    get:
-      summary: Obtener tickets por estado (JPQL)
-      parameters:
-        - in: query
-          name: status
-          required: true
-          schema: { type: string }
-      responses:
-        "200":
-          description: Tickets filtrados
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: "#/components/schemas/TicketOutDto"
+tags:
+  - name: Clinics
+    description: Operaciones relacionadas con clínicas
+  - name: Machines
+    description: Operaciones relacionadas con máquinas médicas
+  - name: Technicians
+    description: Operaciones relacionadas con técnicos
+  - name: Spare Parts
+    description: Operaciones relacionadas con repuestos
+  - name: Tickets
+    description: Operaciones relacionadas con tickets de mantenimiento
 
 components:
   schemas:
-
+    #  CLINIC SCHEMAS
     Clinic:
       type: object
-      required: [name]
+      required:
+        - name
       properties:
-        id: { type: integer }
-        name: { type: string }
-        address: { type: string }
-        phone: { type: string }
-        email: { type: string }
+        id:
+          type: integer
+          format: int64
+          example: 1
+        name:
+          type: string
+          minLength: 1
+          example: "Clinica Central"
+        address:
+          type: string
+          example: "Calle Mayor 123"
+        phone:
+          type: string
+          example: "+34976123456"
+        email:
+          type: string
+          format: email
+          example: "info@clinicacentral.com"
 
     ClinicDto:
       type: object
+      required:
+        - name
+        - address
       properties:
-        id: { type: integer }
-        name: { type: string }
-        address: { type: string }
+        id:
+          type: integer
+          format: int64
+          example: 1
+        name:
+          type: string
+          minLength: 1
+          example: "Clinica Central"
+        address:
+          type: string
+          minLength: 1
+          example: "Calle Mayor 123"
 
     ClinicOutDto:
       type: object
       properties:
-        id: { type: integer }
-        name: { type: string }
+        id:
+          type: integer
+          format: int64
+          example: 1
+        name:
+          type: string
+          example: "Clinica Central"
 
+    ClinicPatch:
+      type: object
+      properties:
+        name:
+          type: string
+          example: "Clinica Central Updated"
+        address:
+          type: string
+          example: "Nueva direccion 456"
+        phone:
+          type: string
+          example: "+34976654321"
+        email:
+          type: string
+          format: email
+          example: "nuevo@clinica.com"
+
+    #  MACHINE SCHEMAS
     Machine:
       type: object
-      required: [serialNumber, model, manufacturer]
+      required:
+        - serialNumber
+        - model
+        - manufacturer
       properties:
-        id: { type: integer }
-        serialNumber: { type: string }
-        model: { type: string }
-        manufacturer: { type: string }
+        id:
+          type: integer
+          format: int64
+          example: 1
+        serialNumber:
+          type: string
+          minLength: 1
+          example: "SN-2024-001"
+        model:
+          type: string
+          minLength: 1
+          example: "MRI-3000"
+        manufacturer:
+          type: string
+          minLength: 1
+          example: "Siemens"
+        clinic:
+          $ref: '#/components/schemas/ClinicOutDto'
 
-    SparePart:
+    MachinePatch:
       type: object
-      required: [name, serialNumber, manufacturer, price, stock]
       properties:
-        id: { type: integer }
-        name: { type: string }
-        serialNumber: { type: string }
-        manufacturer: { type: string }
-        price: { type: number }
-        stock: { type: integer }
+        serialNumber:
+          type: string
+          example: "SN-2024-002"
+        model:
+          type: string
+          example: "MRI-3500"
+        manufacturer:
+          type: string
+          example: "GE Healthcare"
 
+    #  TECHNICIAN SCHEMAS
     Technician:
       type: object
-      required: [name, surname, email]
+      required:
+        - name
+        - surname
+        - email
       properties:
-        id: { type: integer }
-        name: { type: string }
-        surname: { type: string }
-        email: { type: string }
-        phone: { type: string }
-        active: { type: boolean }
+        id:
+          type: integer
+          format: int64
+          example: 1
+        name:
+          type: string
+          minLength: 1
+          example: "Juan"
+        surname:
+          type: string
+          minLength: 1
+          example: "García"
+        email:
+          type: string
+          format: email
+          example: "juan.garcia@aa1.com"
+        phone:
+          type: string
+          example: "+34654321987"
+        active:
+          type: boolean
+          default: true
+          example: true
 
+    TechnicianPatch:
+      type: object
+      properties:
+        name:
+          type: string
+          example: "Juan Carlos"
+        surname:
+          type: string
+          example: "García Pérez"
+        email:
+          type: string
+          format: email
+          example: "juancarlos.garcia@aa1.com"
+        phone:
+          type: string
+          example: "+34654999888"
+        active:
+          type: boolean
+          example: false
+
+    #  SPARE PART SCHEMAS
+    SparePart:
+      type: object
+      required:
+        - name
+        - serialNumber
+        - manufacturer
+        - price
+        - stock
+      properties:
+        id:
+          type: integer
+          format: int64
+          example: 1
+        name:
+          type: string
+          minLength: 1
+          example: "Filtro HEPA"
+        serialNumber:
+          type: string
+          minLength: 1
+          example: "FILTER-2024-H123"
+        manufacturer:
+          type: string
+          minLength: 1
+          example: "FilterTech"
+        price:
+          type: number
+          format: double
+          minimum: 0
+          example: 150.50
+        stock:
+          type: integer
+          minimum: 0
+          example: 25
+
+    SparePartPatch:
+      type: object
+      properties:
+        name:
+          type: string
+          example: "Filtro HEPA Premium"
+        serialNumber:
+          type: string
+          example: "FILTER-2024-H124"
+        manufacturer:
+          type: string
+          example: "FilterTech Pro"
+        price:
+          type: number
+          format: double
+          minimum: 0
+          example: 175.99
+        stock:
+          type: integer
+          minimum: 0
+          example: 30
+
+    #  TICKET SCHEMAS
     Ticket:
       type: object
-      required: [description, openDate, status]
+      required:
+        - description
+        - openDate
+        - status
       properties:
-        id: { type: integer }
-        description: { type: string }
-        openDate: { type: string, format: date }
-        closeDate: { type: string, format: date }
-        status: { type: string }
+        id:
+          type: integer
+          format: int64
+          example: 1
+        description:
+          type: string
+          minLength: 1
+          example: "Mantenimiento preventivo anual"
+        openDate:
+          type: string
+          format: date
+          example: "2024-01-15"
+        closeDate:
+          type: string
+          format: date
+          example: "2024-01-20"
+        status:
+          type: string
+          minLength: 1
+          example: "OPEN"
+        machine:
+          $ref: '#/components/schemas/Machine'
+        technician:
+          $ref: '#/components/schemas/Technician'
 
     TicketDto:
       type: object
+      required:
+        - description
+        - openDate
+        - status
+        - machineId
+        - technicianId
       properties:
-        id: { type: integer }
-        description: { type: string }
-        openDate: { type: string, format: date }
-        closeDate: { type: string, format: date }
-        status: { type: string }
-        machineId: { type: integer }
-        technicianId: { type: integer }
+        id:
+          type: integer
+          format: int64
+          example: 1
+        description:
+          type: string
+          minLength: 1
+          example: "Mantenimiento preventivo anual"
+        openDate:
+          type: string
+          format: date
+          example: "2024-01-15"
+        closeDate:
+          type: string
+          format: date
+          example: "2024-01-20"
+        status:
+          type: string
+          minLength: 1
+          example: "OPEN"
+        machineId:
+          type: integer
+          format: int64
+          example: 5
+        technicianId:
+          type: integer
+          format: int64
+          example: 3
 
     TicketOutDto:
       type: object
       properties:
-        id: { type: integer }
-        description: { type: string }
-        status: { type: string }
-        openDate: { type: string, format: date }
-        closeDate: { type: string, format: date }
-        machineId: { type: integer }
-        machineModel: { type: string }
-        technicianId: { type: integer }
-        technicianName: { type: string }
+        id:
+          type: integer
+          format: int64
+          example: 1
+        description:
+          type: string
+          example: "Mantenimiento preventivo anual"
+        openDate:
+          type: string
+          format: date
+          example: "2024-01-15"
+        closeDate:
+          type: string
+          format: date
+          example: "2024-01-20"
+        status:
+          type: string
+          example: "OPEN"
+        machineId:
+          type: integer
+          format: int64
+          example: 5
+        machineModel:
+          type: string
+          example: "MRI-3000"
+        technicianId:
+          type: integer
+          format: int64
+          example: 3
+        technicianName:
+          type: string
+          example: "Juan García"
+
+    TicketPatch:
+      type: object
+      properties:
+        description:
+          type: string
+          example: "Mantenimiento correctivo urgente"
+        openDate:
+          type: string
+          format: date
+          example: "2024-01-16"
+        closeDate:
+          type: string
+          format: date
+          example: "2024-01-21"
+        status:
+          type: string
+          example: "CLOSED"
+
+    #  ERROR SCHEMAS
+    ErrorResponse:
+      type: object
+      properties:
+        code:
+          type: integer
+          example: 404
+        title:
+          type: string
+          example: "not-found"
+        message:
+          type: string
+          example: "The clinic does not exist"
+        errors:
+          type: object
+          additionalProperties:
+            type: string
+          example:
+            name: "name is mandatory"
+
+paths:
+  # CLINICS ENDPOINTS
+  /clinics:
+    get:
+      tags:
+        - Clinics
+      summary: Listar clínicas con filtros opcionales
+      description: Obtiene una lista de clínicas. Se pueden aplicar filtros por nombre, dirección o teléfono.
+      parameters:
+        - name: name
+          in: query
+          description: Filtrar por nombre de clínica
+          required: false
+          schema:
+            type: string
+          example: "Central"
+        - name: address
+          in: query
+          description: Filtrar por dirección
+          required: false
+          schema:
+            type: string
+          example: "Calle Mayor"
+        - name: phone
+          in: query
+          description: Filtrar por teléfono
+          required: false
+          schema:
+            type: string
+          example: "+34976"
+      responses:
+        '200':
+          description: Lista de clínicas obtenida exitosamente
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ClinicOutDto'
+              examples:
+                listaClinics:
+                  summary: Lista con dos clínicas
+                  value:
+                    - id: 1
+                      name: "Clinica Central"
+                    - id: 2
+                      name: "Clinica Norte"
+                listaVacia:
+                  summary: Sin clínicas encontradas
+                  value: []
+        '400':
+          description: Datos de entrada inválidos
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                code: 400
+                title: "bad-request"
+                message: "Validation error"
+                errors:
+                  name: "name is mandatory"
+        '500':
+          description: Error interno del servidor
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                code: 500
+                title: "internal-error"
+                message: "Error interno del servidor"
+                errors: {}
+
+    post:
+      tags:
+        - Clinics
+      summary: Crear una nueva clínica
+      description: Crea una nueva clínica en el sistema
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Clinic'
+            examples:
+              clinicaBasica:
+                summary: Clínica básica
+                value:
+                  name: "Clinica Central"
+                  address: "Calle Mayor 123"
+                  phone: "+34976123456"
+                  email: "info@clinicacentral.com"
+              clinicaMinima:
+                summary: Clínica con datos mínimos
+                value:
+                  name: "Clinica Norte"
+      responses:
+        '201':
+          description: Clínica creada exitosamente
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Clinic'
+              examples:
+                clinicaCreada:
+                  summary: Clínica recién creada
+                  value:
+                    id: 3
+                    name: "Clinica Central"
+                    address: "Calle Mayor 123"
+                    phone: "+34976123456"
+                    email: "info@clinicacentral.com"
+        '400':
+          description: Datos de entrada inválidos
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                code: 400
+                title: "bad-request"
+                message: "Validation error"
+                errors:
+                  name: "name is mandatory"
+        '500':
+          description: Error interno del servidor
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                code: 500
+                title: "internal-error"
+                message: "Error interno del servidor"
+                errors: {}
+
+  /clinics/{id}:
+    get:
+      tags:
+        - Clinics
+      summary: Obtener una clínica por ID
+      description: Recupera la información de una clínica específica
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID de la clínica
+          schema:
+            type: integer
+            format: int64
+          example: 1
+      responses:
+        '200':
+          description: Clínica encontrada
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ClinicDto'
+              examples:
+                clinicaEncontrada:
+                  summary: Clínica existente
+                  value:
+                    id: 1
+                    name: "Clinica Central"
+                    address: "Calle Mayor 123"
+        '404':
+          description: Clínica no encontrada
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                code: 404
+                title: "not-found"
+                message: "The clinic does not exist"
+                errors: {}
+        '500':
+          description: Error interno del servidor
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                code: 500
+                title: "internal-error"
+                message: "Error interno del servidor"
+                errors: {}
+
+    put:
+      tags:
+        - Clinics
+      summary: Actualizar una clínica
+      description: Actualiza la información de una clínica existente
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID de la clínica
+          schema:
+            type: integer
+            format: int64
+          example: 1
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Clinic'
+            examples:
+              actualizacionCompleta:
+                summary: Actualización completa
+                value:
+                  name: "Clinica Central Updated"
+                  address: "Nueva Avenida 456"
+                  phone: "+34976654321"
+                  email: "nuevo@clinicacentral.com"
+      responses:
+        '200':
+          description: Clínica actualizada exitosamente
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Clinic'
+              examples:
+                clinicaActualizada:
+                  summary: Clínica actualizada
+                  value:
+                    id: 1
+                    name: "Clinica Central Updated"
+                    address: "Nueva Avenida 456"
+                    phone: "+34976654321"
+                    email: "nuevo@clinicacentral.com"
+        '400':
+          description: Datos de entrada inválidos
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                code: 400
+                title: "bad-request"
+                message: "Validation error"
+                errors:
+                  name: "name is mandatory"
+        '404':
+          description: Clínica no encontrada
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                code: 404
+                title: "not-found"
+                message: "The clinic does not exist"
+                errors: {}
+        '500':
+          description: Error interno del servidor
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                code: 500
+                title: "internal-error"
+                message: "Error interno del servidor"
+                errors: {}
+
+    patch:
+      tags:
+        - Clinics
+      summary: Actualizar parcialmente una clínica
+      description: Actualiza campos específicos de una clínica
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID de la clínica
+          schema:
+            type: integer
+            format: int64
+          example: 1
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ClinicPatch'
+            examples:
+              actualizarNombre:
+                summary: Actualizar solo nombre
+                value:
+                  name: "Clinica Central Renovada"
+              actualizarTelefono:
+                summary: Actualizar solo teléfono
+                value:
+                  phone: "+34976999888"
+      responses:
+        '200':
+          description: Clínica actualizada exitosamente
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Clinic'
+              examples:
+                clinicaActualizada:
+                  summary: Clínica con campo actualizado
+                  value:
+                    id: 1
+                    name: "Clinica Central Renovada"
+                    address: "Calle Mayor 123"
+                    phone: "+34976123456"
+                    email: "info@clinicacentral.com"
+        '404':
+          description: Clínica no encontrada
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                code: 404
+                title: "not-found"
+                message: "The clinic does not exist"
+                errors: {}
+        '500':
+          description: Error interno del servidor
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                code: 500
+                title: "internal-error"
+                message: "Error interno del servidor"
+                errors: {}
+
+    delete:
+      tags:
+        - Clinics
+      summary: Eliminar una clínica
+      description: Elimina una clínica del sistema
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID de la clínica
+          schema:
+            type: integer
+            format: int64
+          example: 3
+      responses:
+        '204':
+          description: Clínica eliminada exitosamente
+        '404':
+          description: Clínica no encontrada
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                code: 404
+                title: "not-found"
+                message: "The clinic does not exist"
+                errors: {}
+        '500':
+          description: Error interno del servidor
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                code: 500
+                title: "internal-error"
+                message: "Error interno del servidor"
+                errors: {}
+
+  #  MACHINES ENDPOINTS
+  /machines:
+    get:
+      tags:
+        - Machines
+      summary: Listar máquinas con filtros opcionales
+      description: Obtiene una lista de máquinas. Se pueden aplicar filtros por número de serie, modelo o fabricante.
+      parameters:
+        - name: serialNumber
+          in: query
+          description: Filtrar por número de serie
+          required: false
+          schema:
+            type: string
+          example: "SN-2024"
+        - name: model
+          in: query
+          description: Filtrar por modelo
+          required: false
+          schema:
+            type: string
+          example: "MRI"
+        - name: manufacturer
+          in: query
+          description: Filtrar por fabricante
+          required: false
+          schema:
+            type: string
+          example: "Siemens"
+      responses:
+        '200':
+          description: Lista de máquinas obtenida exitosamente
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Machine'
+              examples:
+                listaMachines:
+                  summary: Lista con dos máquinas
+                  value:
+                    - id: 1
+                      serialNumber: "SN-2024-001"
+                      model: "MRI-3000"
+                      manufacturer: "Siemens"
+                      clinic:
+                        id: 1
+                        name: "Clinica Central"
+                    - id: 2
+                      serialNumber: "SN-2024-002"
+                      model: "CT-5000"
+                      manufacturer: "GE Healthcare"
+                      clinic:
+                        id: 1
+                        name: "Clinica Central"
+        '400':
+          description: Parámetros de consulta inválidos
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                code: 400
+                title: "bad-request"
+                message: "Invalid request parameter"
+                errors: { }
+        '500':
+          description: Error interno del servidor
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                code: 500
+                title: "internal-error"
+                message: "Error interno del servidor"
+                errors: { }
+
+
+  #  TECHNICIANS ENDPOINTS
+  /technicians:
+    get:
+      tags:
+        - Technicians
+      summary: Listar técnicos con filtros opcionales
+      description: Obtiene una lista de técnicos. Se pueden aplicar filtros por nombre, email o estado activo.
+      parameters:
+        - name: name
+          in: query
+          description: Filtrar por nombre
+          required: false
+          schema:
+            type: string
+          example: "Juan"
+        - name: email
+          in: query
+          description: Filtrar por email
+          required: false
+          schema:
+            type: string
+          example: "juan.garcia@aa1.com"
+        - name: active
+          in: query
+          description: Filtrar por estado activo
+          required: false
+          schema:
+            type: boolean
+          example: true
+      responses:
+        '200':
+          description: Lista de técnicos obtenida exitosamente
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Technician'
+              examples:
+                listaTechnicians:
+                  summary: Lista con dos técnicos
+                  value:
+                    - id: 1
+                      name: "Juan"
+                      surname: "García"
+                      email: "juan.garcia@aa1.com"
+                      phone: "+34654321987"
+                      active: true
+                    - id: 2
+                      name: "María"
+                      surname: "López"
+                      email: "maria.lopez@aa1.com"
+                      phone: "+34654987654"
+                      active: true
+                listaVacia:
+                  summary: Sin técnicos encontrados
+                  value: []
+        '500':
+          description: Error interno del servidor
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                code: 500
+                title: "internal-error"
+                message: "Error interno del servidor"
+                errors: { }
+
+    post:
+      tags:
+        - Technicians
+      summary: Crear un nuevo técnico
+      description: Crea un nuevo técnico en el sistema
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Technician'
+            examples:
+              tecnicoCompleto:
+                summary: Técnico completo
+                value:
+                  name: "Juan"
+                  surname: "García"
+                  email: "juan.garcia@aa1.com"
+                  phone: "+34654321987"
+                  active: true
+              tecnicoBasico:
+                summary: Técnico con datos mínimos
+                value:
+                  name: "María"
+                  surname: "López"
+                  email: "maria.lopez@aa1.com"
+      responses:
+        '201':
+          description: Técnico creado exitosamente
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Technician'
+              examples:
+                tecnicoCreado:
+                  summary: Técnico recién creado
+                  value:
+                    id: 3
+                    name: "Juan"
+                    surname: "García"
+                    email: "juan.garcia@aa1.com"
+                    phone: "+34654321987"
+                    active: true
+        '400':
+          description: Datos de entrada inválidos
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                code: 400
+                title: "bad-request"
+                message: "Validation error"
+                errors:
+                  name: "name is mandatory"
+
+        '500':
+          description: Error interno del servidor
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                code: 500
+                title: "internal-error"
+                message: "Error interno del servidor"
+                errors: { }
+
+  /technicians/{id}:
+    get:
+      tags:
+        - Technicians
+      summary: Obtener un técnico por ID
+      description: Recupera la información de un técnico específico
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID del técnico
+          schema:
+            type: integer
+            format: int64
+          example: 1
+      responses:
+        '200':
+          description: Técnico encontrado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Technician'
+              examples:
+                tecnicoEncontrado:
+                  summary: Técnico existente
+                  value:
+                    id: 1
+                    name: "Juan"
+                    surname: "García"
+                    email: "juan.garcia@aa1.com"
+                    phone: "+34654321987"
+                    active: true
+        '404':
+          description: Técnico no encontrado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                code: 404
+                title: "not-found"
+                message: "The technician does not exist"
+                errors: { }
+        '500':
+          description: Error interno del servidor
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                code: 500
+                title: "internal-error"
+                message: "Error interno del servidor"
+                errors: { }
+
+    put:
+      tags:
+        - Technicians
+      summary: Actualizar un técnico
+      description: Actualiza la información de un técnico existente
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID del técnico
+          schema:
+            type: integer
+            format: int64
+          example: 1
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Technician'
+            examples:
+              actualizacionCompleta:
+                summary: Actualización completa
+                value:
+                  name: "Juan Carlos"
+                  surname: "García Pérez"
+                  email: "juancarlos.garcia@aa1.com"
+                  phone: "+34654999888"
+                  active: true
+      responses:
+        '200':
+          description: Técnico actualizado exitosamente
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Technician'
+              examples:
+                tecnicoActualizado:
+                  summary: Técnico actualizado
+                  value:
+                    id: 1
+                    name: "Juan Carlos"
+                    surname: "García Pérez"
+                    email: "juancarlos.garcia@aa1.com"
+                    phone: "+34654999888"
+                    active: true
+        '400':
+          description: Datos de entrada inválidos
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                code: 400
+                title: "bad-request"
+                message: "Validation error"
+                errors:
+                  email: "email must be valid"
+        '404':
+          description: Técnico no encontrado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                code: 404
+                title: "not-found"
+                message: "The technician does not exist"
+                errors: { }
+        '500':
+          description: Error interno del servidor
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                code: 500
+                title: "internal-error"
+                message: "Error interno del servidor"
+                errors: { }
+
+    patch:
+      tags:
+        - Technicians
+      summary: Actualizar parcialmente un técnico
+      description: Actualiza campos específicos de un técnico
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID del técnico
+          schema:
+            type: integer
+            format: int64
+          example: 1
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TechnicianPatch'
+            examples:
+              desactivarTecnico:
+                summary: Desactivar técnico
+                value:
+                  active: false
+              actualizarTelefono:
+                summary: Actualizar solo teléfono
+                value:
+                  phone: "+34654111222"
+      responses:
+        '200':
+          description: Técnico actualizado exitosamente
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Technician'
+              examples:
+                tecnicoActualizado:
+                  summary: Técnico con campo actualizado
+                  value:
+                    id: 1
+                    name: "Juan"
+                    surname: "García"
+                    email: "juan.garcia@aa1.com"
+                    phone: "+34654111222"
+                    active: true
+        '404':
+          description: Técnico no encontrado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                code: 404
+                title: "not-found"
+                message: "The technician does not exist"
+                errors: { }
+        '500':
+          description: Error interno del servidor
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                code: 500
+                title: "internal-error"
+                message: "Error interno del servidor"
+                errors: { }
+
+    delete:
+      tags:
+        - Technicians
+      summary: Eliminar un técnico
+      description: Elimina un técnico del sistema
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID del técnico
+          schema:
+            type: integer
+            format: int64
+          example: 3
+      responses:
+        '204':
+          description: Técnico eliminado exitosamente
+        '404':
+          description: Técnico no encontrado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                code: 404
+                title: "not-found"
+                message: "The technician does not exist"
+                errors: { }
+        '500':
+          description: Error interno del servidor
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                code: 500
+                title: "internal-error"
+                message: "Error interno del servidor"
+                errors: { }
+
+  /technicians/by-active/{active}:
+    get:
+      tags:
+        - Technicians
+      summary: Obtener técnicos por estado activo (JPQL)
+      description: Recupera todos los técnicos activos o inactivos usando JPQL
+      parameters:
+        - name: active
+          in: path
+          required: true
+          description: Estado activo del técnico
+          schema:
+            type: boolean
+          example: true
+      responses:
+        '200':
+          description: Lista de técnicos filtrada por estado
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Technician'
+              examples:
+                tecnicosActivos:
+                  summary: Técnicos activos
+                  value:
+                    - id: 1
+                      name: "Juan"
+                      surname: "García"
+                      email: "juan.garcia@aa1.com"
+                      phone: "+34654321987"
+                      active: true
+                    - id: 2
+                      name: "María"
+                      surname: "López"
+                      email: "maria.lopez@aa1.com"
+                      phone: "+34654987654"
+                      active: true
+        '500':
+          description: Error interno del servidor
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                code: 500
+                title: "internal-error"
+                message: "Error interno del servidor"
+                errors: { }
+
+  #  SPARE PARTS ENDPOINTS
+  /spare-parts:
+    get:
+      tags:
+        - Spare Parts
+      summary: Listar repuestos con filtros opcionales
+      description: Obtiene una lista de repuestos. Se pueden aplicar filtros por nombre, fabricante o precio.
+      parameters:
+        - name: name
+          in: query
+          description: Filtrar por nombre
+          required: false
+          schema:
+            type: string
+          example: "Filtro"
+        - name: manufacturer
+          in: query
+          description: Filtrar por fabricante
+          required: false
+          schema:
+            type: string
+          example: "FilterTech"
+        - name: price
+          in: query
+          description: Filtrar por precio exacto
+          required: false
+          schema:
+            type: number
+            format: double
+          example: 150.50
+      responses:
+        '200':
+          description: Lista de repuestos obtenida exitosamente
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/SparePart'
+              examples:
+                listaSpareParts:
+                  summary: Lista con dos repuestos
+                  value:
+                    - id: 1
+                      name: "Filtro HEPA"
+                      serialNumber: "FILTER-2024-H123"
+                      manufacturer: "FilterTech"
+                      price: 150.50
+                      stock: 25
+                    - id: 2
+                      name: "Sensor Temperatura"
+                      serialNumber: "SENSOR-2024-T456"
+                      manufacturer: "SensorPro"
+                      price: 75.99
+                      stock: 40
+                listaVacia:
+                  summary: Sin repuestos encontrados
+                  value: []
+        '400':
+          description: Parámetros de consulta inválidos
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                code: 400
+                title: "bad-request"
+                message: "Invalid request parameter"
+                errors:
+                  price: "must be a number"
+        '500':
+          description: Error interno del servidor
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                code: 500
+                title: "internal-error"
+                message: "Error interno del servidor"
+                errors: { }
+
+    post:
+      tags:
+        - Spare Parts
+      summary: Crear un nuevo repuesto
+      description: Crea un nuevo repuesto en el sistema
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SparePart'
+            examples:
+              repuestoCompleto:
+                summary: Repuesto completo
+                value:
+                  name: "Filtro HEPA"
+                  serialNumber: "FILTER-2024-H123"
+                  manufacturer: "FilterTech"
+                  price: 150.50
+                  stock: 25
+              repuestoBasico:
+                summary: Repuesto básico
+                value:
+                  name: "Sensor Temperatura"
+                  serialNumber: "SENSOR-2024-T456"
+                  manufacturer: "SensorPro"
+                  price: 75.99
+                  stock: 40
+      responses:
+        '201':
+          description: Repuesto creado exitosamente
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SparePart'
+              examples:
+                repuestoCreado:
+                  summary: Repuesto recién creado
+                  value:
+                    id: 3
+                    name: "Filtro HEPA"
+                    serialNumber: "FILTER-2024-H123"
+                    manufacturer: "FilterTech"
+                    price: 150.50
+                    stock: 25
+        '400':
+          description: Datos de entrada inválidos
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties:
+                  type: string
+              example:
+                code: 400
+                name: "name is mandatory"
+                serialNumber: "serial number is mandatory"
+                manufacturer: "manufacturer is mandatory"
+                price: "price is mandatory"
+                stock: "stock is mandatory"
+        '500':
+          description: Error interno del servidor
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                code: 500
+                title: "internal-error"
+                message: "Error interno del servidor"
+                errors: { }
+
+  /spare-parts/{id}:
+    get:
+      tags:
+        - Spare Parts
+      summary: Obtener un repuesto por ID
+      description: Recupera la información de un repuesto específico
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID del repuesto
+          schema:
+            type: integer
+            format: int64
+          example: 1
+      responses:
+        '200':
+          description: Repuesto encontrado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SparePart'
+              examples:
+                repuestoEncontrado:
+                  summary: Repuesto existente
+                  value:
+                    id: 1
+                    name: "Filtro HEPA"
+                    serialNumber: "FILTER-2024-H123"
+                    manufacturer: "FilterTech"
+                    price: 150.50
+                    stock: 25
+        '404':
+          description: Repuesto no encontrado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                code: 404
+                title: "not-found"
+                message: "Spare part not found"
+                errors: { }
+
+
+        '500':
+          description: Error interno del servidor
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                code: 500
+                title: "internal-error"
+                message: "Error interno del servidor"
+                errors: { }
+
+    put:
+      tags:
+        - Spare Parts
+      summary: Actualizar un repuesto
+      description: Actualiza la información de un repuesto existente
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID del repuesto
+          schema:
+            type: integer
+            format: int64
+          example: 1
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SparePart'
+            examples:
+              actualizacionCompleta:
+                summary: Actualización completa
+                value:
+                  name: "Filtro HEPA Premium"
+                  serialNumber: "FILTER-2024-H124"
+                  manufacturer: "FilterTech Pro"
+                  price: 175.99
+                  stock: 30
+      responses:
+        '200':
+          description: Repuesto actualizado exitosamente
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SparePart'
+              examples:
+                repuestoActualizado:
+                  summary: Repuesto actualizado
+                  value:
+                    id: 1
+                    name: "Filtro HEPA Premium"
+                    serialNumber: "FILTER-2024-H124"
+                    manufacturer: "FilterTech Pro"
+                    price: 175.99
+                    stock: 30
+        '400':
+          description: Datos de entrada inválidos
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties:
+                  type: string
+              example:
+                code: 400
+                name: "name is mandatory"
+                serialNumber: "serial number is mandatory"
+                manufacturer: "manufacturer is mandatory"
+                price: "price is mandatory"
+                stock: "stock is mandatory"
+        '404':
+          description: Repuesto no encontrado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                code: 404
+                title: "not-found"
+                message: "Spare part not found"
+                errors: { }
+
+
+        '500':
+          description: Error interno del servidor
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                code: 500
+                title: "internal-error"
+                message: "Error interno del servidor"
+                errors: { }
+
+    patch:
+      tags:
+        - Spare Parts
+      summary: Actualizar parcialmente un repuesto
+      description: Actualiza campos específicos de un repuesto
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID del repuesto
+          schema:
+            type: integer
+            format: int64
+          example: 1
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SparePartPatch'
+            examples:
+              actualizarStock:
+                summary: Actualizar solo stock
+                value:
+                  stock: 50
+              actualizarPrecio:
+                summary: Actualizar solo precio
+                value:
+                  price: 165.00
+      responses:
+        '200':
+          description: Repuesto actualizado exitosamente
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SparePart'
+              examples:
+                repuestoActualizado:
+                  summary: Repuesto con campo actualizado
+                  value:
+                    id: 1
+                    name: "Filtro HEPA"
+                    serialNumber: "FILTER-2024-H123"
+                    manufacturer: "FilterTech"
+                    price: 165.00
+                    stock: 25
+        '404':
+          description: Repuesto no encontrado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                code: 404
+                title: "not-found"
+                message: "Spare part not found"
+                errors: { }
+        '500':
+          description: Error interno del servidor
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                code: 500
+                title: "internal-error"
+                message: "Error interno del servidor"
+                errors: { }
+
+    delete:
+      tags:
+        - Spare Parts
+      summary: Eliminar un repuesto
+      description: Elimina un repuesto del sistema
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID del repuesto
+          schema:
+            type: integer
+            format: int64
+          example: 3
+      responses:
+        '204':
+          description: Repuesto eliminado exitosamente
+        '404':
+          description: Repuesto no encontrado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                code: 404
+                title: "not-found"
+                message: "Spare part not found"
+                errors: { }
+        '500':
+          description: Error interno del servidor
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                code: 500
+                title: "internal-error"
+                message: "Error interno del servidor"
+                errors: { }
+
+  #  TICKETS ENDPOINTS
+  /tickets:
+    get:
+      tags:
+        - Tickets
+      summary: Listar tickets con filtros opcionales
+      description: Obtiene una lista de tickets. Se pueden aplicar filtros por estado, ID de máquina o ID de técnico.
+      parameters:
+        - name: status
+          in: query
+          description: Filtrar por estado
+          required: false
+          schema:
+            type: string
+          example: "OPEN"
+        - name: machineId
+          in: query
+          description: Filtrar por ID de máquina
+          required: false
+          schema:
+            type: integer
+            format: int64
+          example: 1
+        - name: technicianId
+          in: query
+          description: Filtrar por ID de técnico
+          required: false
+          schema:
+            type: integer
+            format: int64
+          example: 2
+      responses:
+        '200':
+          description: Lista de tickets obtenida exitosamente
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/TicketOutDto'
+              examples:
+                listaTickets:
+                  summary: Lista con dos tickets
+                  value:
+                    - id: 1
+                      description: "Mantenimiento preventivo anual"
+                      openDate: "2024-01-15"
+                      closeDate: null
+                      status: "OPEN"
+                      machineId: 1
+                      machineModel: "MRI-3000"
+                      technicianId: 1
+                      technicianName: "Juan García"
+                    - id: 2
+                      description: "Reparación de sensor"
+                      openDate: "2024-01-10"
+                      closeDate: "2024-01-12"
+                      status: "CLOSED"
+                      machineId: 2
+                      machineModel: "CT-5000"
+                      technicianId: 2
+                      technicianName: "María López"
+                listaVacia:
+                  summary: Sin tickets encontrados
+                  value: [ ]
+        '400':
+          description: Parámetros de consulta inválidos
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                code: 400
+                title: "bad-request"
+                message: "Invalid request parameter"
+                errors:
+                  machineId: "must be a number"
+        '500':
+          description: Error interno del servidor
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                code: 500
+                title: "internal-error"
+                message: "Error interno del servidor"
+                errors: { }
+
+
+    post:
+      tags:
+        - Tickets
+      summary: Crear un nuevo ticket
+      description: Crea un nuevo ticket de mantenimiento
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Ticket'
+            examples:
+              ticketCompleto:
+                summary: Ticket completo
+                value:
+                  description: "Mantenimiento preventivo anual"
+                  openDate: "2024-01-15"
+                  closeDate: null
+                  status: "OPEN"
+              ticketBasico:
+                summary: Ticket básico
+                value:
+                  description: "Revisión general"
+                  openDate: "2024-01-20"
+                  status: "OPEN"
+      responses:
+        '201':
+          description: Ticket creado exitosamente
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Ticket'
+              examples:
+                ticketCreado:
+                  summary: Ticket recién creado
+                  value:
+                    id: 3
+                    description: "Mantenimiento preventivo anual"
+                    openDate: "2024-01-15"
+                    closeDate: null
+                    status: "OPEN"
+                    machine: null
+                    technician: null
+        '400':
+          description: Datos de entrada inválidos
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                code: 400
+                title: "bad-request"
+                message: "Validation error"
+                errors:
+                  description: "description is mandatory"
+                  openDate: "open date is mandatory"
+                  status: "status is mandatory"
+        '500':
+          description: Error interno del servidor
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                example:
+                  code: 500
+                  title: "internal-error"
+                  message: "Error interno del servidor"
+                  errors: { }
+
+  /tickets/{id}:
+    get:
+      tags:
+        - Tickets
+      summary: Obtener un ticket por ID
+      description: Recupera la información de un ticket específico
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID del ticket
+          schema:
+            type: integer
+            format: int64
+          example: 1
+      responses:
+        '200':
+          description: Ticket encontrado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TicketDto'
+              examples:
+                ticketEncontrado:
+                  summary: Ticket existente
+                  value:
+                    id: 1
+                    description: "Mantenimiento preventivo anual"
+                    openDate: "2024-01-15"
+                    closeDate: null
+                    status: "OPEN"
+                    machineId: 1
+                    technicianId: 1
+        '404':
+          description: Ticket no encontrado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                code: 404
+                title: "not-found"
+                message: "The ticket does not exist"
+                errors: {}
+        '500':
+          description: Error interno del servidor
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                code: 500
+                title: "internal-error"
+                message: "Error interno del servidor"
+                errors: {}
+
+    put:
+      tags:
+        - Tickets
+      summary: Actualizar un ticket
+      description: Actualiza la información de un ticket existente
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID del ticket
+          schema:
+            type: integer
+            format: int64
+          example: 1
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Ticket'
+            examples:
+              cerrarTicket:
+                summary: Cerrar ticket
+                value:
+                  description: "Mantenimiento preventivo completado"
+                  openDate: "2024-01-15"
+                  closeDate: "2024-01-20"
+                  status: "CLOSED"
+      responses:
+        '200':
+          description: Ticket actualizado exitosamente
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Ticket'
+              examples:
+                ticketActualizado:
+                  summary: Ticket actualizado
+                  value:
+                    id: 1
+                    description: "Mantenimiento preventivo completado"
+                    openDate: "2024-01-15"
+                    closeDate: "2024-01-20"
+                    status: "CLOSED"
+                    machine:
+                      id: 1
+                      serialNumber: "SN-2024-001"
+                      model: "MRI-3000"
+                      manufacturer: "Siemens"
+                    technician:
+                      id: 1
+                      name: "Juan"
+                      surname: "García"
+                      email: "juan.garcia@aa1.com"
+                      phone: "+34654321987"
+                      active: true
+        '404':
+          description: Ticket no encontrado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                code: 404
+                title: "not-found"
+                message: "The ticket does not exist"
+                errors: {}
+        '500':
+          description: Error interno del servidor
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                code: 500
+                title: "internal-error"
+                message: "Error interno del servidor"
+                errors: {}
+
+    patch:
+      tags:
+        - Tickets
+      summary: Actualizar parcialmente un ticket
+      description: Actualiza campos específicos de un ticket
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID del ticket
+          schema:
+            type: integer
+            format: int64
+          example: 1
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TicketPatch'
+            examples:
+              cambiarEstado:
+                summary: Cambiar estado a cerrado
+                value:
+                  status: "CLOSED"
+                  closeDate: "2024-01-20"
+              actualizarDescripcion:
+                summary: Actualizar descripción
+                value:
+                  description: "Mantenimiento preventivo con cambio de filtros"
+      responses:
+        '200':
+          description: Ticket actualizado exitosamente
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Ticket'
+              examples:
+                ticketActualizado:
+                  summary: Ticket con campo actualizado
+                  value:
+                    id: 1
+                    description: "Mantenimiento preventivo anual"
+                    openDate: "2024-01-15"
+                    closeDate: "2024-01-20"
+                    status: "CLOSED"
+                    machine:
+                      id: 1
+                      serialNumber: "SN-2024-001"
+                      model: "MRI-3000"
+                      manufacturer: "Siemens"
+                    technician:
+                      id: 1
+                      name: "Juan"
+                      surname: "García"
+                      email: "juan.garcia@aa1.com"
+                      phone: "+34654321987"
+                      active: true
+        '404':
+          description: Ticket no encontrado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                code: 404
+                title: "not-found"
+                message: "The ticket does not exist"
+                errors: { }
+        '500':
+          description: Error interno del servidor
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                code: 500
+                title: "internal-error"
+                message: "Error interno del servidor"
+                errors: { }
+    delete:
+      tags:
+        - Tickets
+      summary: Eliminar un ticket
+      description: Elimina un ticket existente del sistema
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID del ticket
+          schema:
+            type: integer
+            format: int64
+          example: 1
+      responses:
+        '204':
+          description: Ticket eliminado exitosamente
+        '404':
+          description: Ticket no encontrado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                code: 404
+                title: "not-found"
+                message: "The ticket does not exist"
+                errors: { }
+        '500':
+          description: Error interno del servidor
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                code: 500
+                title: "internal-error"
+                message: "Error interno del servidor"
+                errors: { }
+
+
+    post:
+      tags:
+        - Machines
+      summary: Crear una nueva máquina
+      description: Crea una nueva máquina en el sistema
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Machine'
+            examples:
+              maquinaCompleta:
+                summary: Máquina completa
+                value:
+                  serialNumber: "SN-2024-003"
+                  model: "MRI-3500"
+                  manufacturer: "Siemens"
+              maquinaBasica:
+                summary: Máquina sin clínica asignada
+                value:
+                  serialNumber: "SN-2024-004"
+                  model: "CT-6000"
+                  manufacturer: "GE Healthcare"
+      responses:
+        '201':
+          description: Máquina creada exitosamente
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Machine'
+              examples:
+                maquinaCreada:
+                  summary: Máquina recién creada
+                  value:
+                    id: 3
+                    serialNumber: "SN-2024-003"
+                    model: "MRI-3500"
+                    manufacturer: "Siemens"
+                    clinic: null
+        '400':
+          description: Datos de entrada inválidos
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                code: 400
+                title: "bad-request"
+                message: "Validation error"
+                errors:
+                  serialNumber: "Serial number is mandatory"
+        '500':
+          description: Error interno del servidor
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                code: 500
+                title: "internal-error"
+                message: "Error interno del servidor"
+                errors: { }
+
+
+  /machines/{id}:
+    get:
+      tags:
+        - Machines
+      summary: Obtener una máquina por ID
+      description: Recupera la información de una máquina específica
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID de la máquina
+          schema:
+            type: integer
+            format: int64
+          example: 1
+      responses:
+        '200':
+          description: Máquina encontrada
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Machine'
+              examples:
+                maquinaEncontrada:
+                  summary: Máquina existente
+                  value:
+                    id: 1
+                    serialNumber: "SN-2024-001"
+                    model: "MRI-3000"
+                    manufacturer: "Siemens"
+                    clinic:
+                      id: 1
+                      name: "Clinica Central"
+        '404':
+          description: Máquina no encontrada
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                code: 404
+                title: "not-found"
+                message: "Machine not found"
+                errors: { }
+        '500':
+          description: Error interno del servidor
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                code: 500
+                title: "internal-error"
+                message: "Error interno del servidor"
+                errors: { }
+
+
+    put:
+      tags:
+        - Machines
+      summary: Actualizar una máquina
+      description: Actualiza la información de una máquina existente
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID de la máquina
+          schema:
+            type: integer
+            format: int64
+          example: 1
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Machine'
+            examples:
+              actualizacionCompleta:
+                summary: Actualización completa
+                value:
+                  serialNumber: "SN-2024-001-UPD"
+                  model: "MRI-3500"
+                  manufacturer: "Siemens Healthcare"
+      responses:
+        '200':
+          description: Máquina actualizada exitosamente
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Machine'
+              examples:
+                maquinaActualizada:
+                  summary: Máquina actualizada
+                  value:
+                    id: 1
+                    serialNumber: "SN-2024-001-UPD"
+                    model: "MRI-3500"
+                    manufacturer: "Siemens Healthcare"
+                    clinic:
+                      id: 1
+                      name: "Clinica Central"
+        '404':
+          description: Máquina no encontrada
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                code: 404
+                title: "not-found"
+                message: "Machine not found"
+                errors: { }
+        '500':
+          description: Error interno del servidor
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                code: 500
+                title: "internal-error"
+                message: "Error interno del servidor"
+                errors: { }
+
+    patch:
+      tags:
+        - Machines
+      summary: Actualizar parcialmente una máquina
+      description: Actualiza campos específicos de una máquina
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID de la máquina
+          schema:
+            type: integer
+            format: int64
+          example: 1
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MachinePatch'
+            examples:
+              actualizarModelo:
+                summary: Actualizar solo modelo
+                value:
+                  model: "MRI-4000"
+              actualizarFabricante:
+                summary: Actualizar solo fabricante
+                value:
+                  manufacturer: "GE Healthcare"
+      responses:
+        '200':
+          description: Máquina actualizada exitosamente
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Machine'
+              examples:
+                maquinaActualizada:
+                  summary: Máquina con campo actualizado
+                  value:
+                    id: 1
+                    serialNumber: "SN-2024-001"
+                    model: "MRI-4000"
+                    manufacturer: "Siemens"
+                    clinic:
+                      id: 1
+                      name: "Clinica Central"
+        '404':
+          description: Máquina no encontrada
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                code: 404
+                title: "not-found"
+                message: "Machine not found"
+                errors: { }
+        '500':
+          description: Error interno del servidor
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                code: 500
+                title: "internal-error"
+                message: "Error interno del servidor"
+                errors: { }
+
+    delete:
+      tags:
+        - Machines
+      summary: Eliminar una máquina
+      description: Elimina una máquina del sistema
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID de la máquina
+          schema:
+            type: integer
+            format: int64
+          example: 3
+      responses:
+        '204':
+          description: Máquina eliminada exitosamente
+        '404':
+          description: Máquina no encontrada
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                code: 404
+                title: "not-found"
+                message: "Machine not found"
+                errors: { }
+        '500':
+          description: Error interno del servidor
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                code: 500
+                title: "internal-error"
+                message: "Error interno del servidor"
+                errors: { }
+
+  /machines/by-clinic/{clinicId}:
+    get:
+      tags:
+        - Machines
+      summary: Obtener máquinas por clínica (JPQL)
+      description: Recupera todas las máquinas asociadas a una clínica específica usando JPQL
+      parameters:
+        - name: clinicId
+          in: path
+          required: true
+          description: ID de la clínica
+          schema:
+            type: integer
+            format: int64
+          example: 1
+      responses:
+        '200':
+          description: Lista de máquinas de la clínica
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Machine'
+              examples:
+                maquinasClinica:
+                  summary: Máquinas de la clínica
+                  value:
+                    - id: 1
+                      serialNumber: "SN-2024-001"
+                      model: "MRI-3000"
+                      manufacturer: "Siemens"
+                      clinic:
+                        id: 1
+                        name: "Clinica Central"
+                    - id: 3
+                      serialNumber: "SN-2024-005"
+                      model: "CT-5000"
+                      manufacturer: "GE Healthcare"
+                      clinic:
+                        id: 1
+                        name: "Clinica Central"
+                listaVacia:
+                  summary: Clínica sin máquinas asociadas
+                  value: [ ]
+        '400':
+          description: ID de clínica inválido
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                code: 400
+                title: "bad-request"
+                message: "Invalid request parameter"
+                errors:
+                  clinicId: "must be a number"
+        '500':
+          description: Error interno del servidor
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                code: 500
+                title: "internal-error"
+                message: "Error interno del servidor"
+                errors: { }

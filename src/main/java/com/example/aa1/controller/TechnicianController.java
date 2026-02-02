@@ -21,7 +21,9 @@ public class TechnicianController {
         this.technicianService = technicianService;
     }
 
-    // GET (CON FILTRADO )
+
+    // GET (CON FILTRADO)
+
 
     @GetMapping
     public ResponseEntity<List<Technician>> getAll(
@@ -34,28 +36,51 @@ public class TechnicianController {
         );
     }
 
+
+    // GET BY ID
+
+
     @GetMapping("/{id}")
     public ResponseEntity<Technician> get(@PathVariable long id)
             throws TechnicianNotFoundException {
 
-        return ResponseEntity.ok(technicianService.findById(id));
+        return ResponseEntity.ok(
+                technicianService.findById(id)
+        );
     }
 
+
+    // POST
+
+
     @PostMapping
-    public ResponseEntity<Technician> add(@Valid @RequestBody Technician technician) {
-        return new ResponseEntity<>(technicianService.add(technician), HttpStatus.CREATED);
+    public ResponseEntity<Technician> add(
+            @Valid @RequestBody Technician technician) {
+
+        return new ResponseEntity<>(
+                technicianService.add(technician),
+                HttpStatus.CREATED
+        );
     }
+
+
+    // PUT
+
 
     @PutMapping("/{id}")
     public ResponseEntity<Technician> modify(
             @PathVariable long id,
-            @RequestBody Technician technician)
+            @Valid @RequestBody Technician technician)
             throws TechnicianNotFoundException {
 
-        return ResponseEntity.ok(technicianService.modify(id, technician));
+        return ResponseEntity.ok(
+                technicianService.modify(id, technician)
+        );
     }
 
-    //  PATCH
+
+    // PATCH
+
 
     @PatchMapping("/{id}")
     public ResponseEntity<Technician> patch(
@@ -63,8 +88,14 @@ public class TechnicianController {
             @RequestBody Map<String, Object> updates)
             throws TechnicianNotFoundException {
 
-        return ResponseEntity.ok(technicianService.patch(id, updates));
+        return ResponseEntity.ok(
+                technicianService.patch(id, updates)
+        );
     }
+
+
+    // DELETE
+
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable long id)
@@ -74,14 +105,9 @@ public class TechnicianController {
         return ResponseEntity.noContent().build();
     }
 
-    @ExceptionHandler(TechnicianNotFoundException.class)
-    public ResponseEntity<String> handleTechnicianNotFound(
-            TechnicianNotFoundException ex) {
 
-        return new ResponseEntity<>(ex.getMessage(), HttpStatus.NOT_FOUND);
-    }
+    // JPQL
 
-    //  JPQL
 
     @GetMapping("/by-active/{active}")
     public ResponseEntity<List<Technician>> getByActive(

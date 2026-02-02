@@ -20,7 +20,9 @@ public class MachineController {
         this.machineService = machineService;
     }
 
-    //  GET (CON FILTRADO )
+
+    // GET (CON FILTRADO)
+
 
     @GetMapping("/machines")
     public ResponseEntity<List<Machine>> getAll(
@@ -33,27 +35,50 @@ public class MachineController {
         );
     }
 
+
+    // GET BY ID
+
+
     @GetMapping("/machines/{id}")
     public ResponseEntity<Machine> getById(@PathVariable long id)
             throws MachineNotFoundException {
-        return ResponseEntity.ok(machineService.findById(id));
+
+        return ResponseEntity.ok(
+                machineService.findById(id)
+        );
     }
 
+
+    // POST
+
     @PostMapping("/machines")
-    public ResponseEntity<Machine> add(@Valid @RequestBody Machine machine) {
-        return new ResponseEntity<>(machineService.add(machine), HttpStatus.CREATED);
+    public ResponseEntity<Machine> add(
+            @Valid @RequestBody Machine machine) {
+
+        return new ResponseEntity<>(
+                machineService.add(machine),
+                HttpStatus.CREATED
+        );
     }
+
+
+    // PUT
+
 
     @PutMapping("/machines/{id}")
     public ResponseEntity<Machine> modify(
             @PathVariable long id,
-            @RequestBody Machine machine)
+            @Valid @RequestBody Machine machine)
             throws MachineNotFoundException {
 
-        return ResponseEntity.ok(machineService.modify(id, machine));
+        return ResponseEntity.ok(
+                machineService.modify(id, machine)
+        );
     }
 
-    //  PATCH
+
+    // PATCH
+
 
     @PatchMapping("/machines/{id}")
     public ResponseEntity<Machine> patch(
@@ -61,8 +86,14 @@ public class MachineController {
             @RequestBody Map<String, Object> updates)
             throws MachineNotFoundException {
 
-        return ResponseEntity.ok(machineService.patch(id, updates));
+        return ResponseEntity.ok(
+                machineService.patch(id, updates)
+        );
     }
+
+
+    // DELETE
+
 
     @DeleteMapping("/machines/{id}")
     public ResponseEntity<Void> delete(@PathVariable long id)
@@ -72,16 +103,9 @@ public class MachineController {
         return ResponseEntity.noContent().build();
     }
 
-    @ExceptionHandler(MachineNotFoundException.class)
-    public ResponseEntity<Map<String, String>> handleMachineNotFound(
-            MachineNotFoundException ex) {
 
-        return ResponseEntity
-                .status(HttpStatus.NOT_FOUND)
-                .body(Map.of("error", ex.getMessage()));
-    }
+    // JPQL
 
-    //  JPQL
 
     @GetMapping("/machines/by-clinic/{clinicId}")
     public ResponseEntity<List<Machine>> getByClinic(

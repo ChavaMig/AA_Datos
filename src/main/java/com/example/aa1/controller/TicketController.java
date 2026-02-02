@@ -3,18 +3,14 @@ package com.example.aa1.controller;
 import com.example.aa1.domain.Ticket;
 import com.example.aa1.dto.TicketDto;
 import com.example.aa1.dto.TicketOutDto;
-import com.example.aa1.exception.ErrorResponse;
 import com.example.aa1.exception.TicketNotFoundException;
 import com.example.aa1.service.TicketService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.FieldError;
-import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -24,7 +20,9 @@ public class TicketController {
     @Autowired
     private TicketService ticketService;
 
-    //  GET (CON FILTRADO)
+
+    // GET (CON FILTRADO)
+
 
     @GetMapping("/tickets")
     public ResponseEntity<List<TicketOutDto>> getAll(
@@ -37,7 +35,9 @@ public class TicketController {
         );
     }
 
-    //  JPQL
+
+    // JPQL
+
 
     @GetMapping("/tickets/jpql/by-status")
     public ResponseEntity<List<TicketOutDto>> getByStatusJPQL(
@@ -48,6 +48,10 @@ public class TicketController {
         );
     }
 
+
+    // GET BY ID
+
+
     @GetMapping("/tickets/{id}")
     public ResponseEntity<TicketDto> get(@PathVariable long id)
             throws TicketNotFoundException {
@@ -56,7 +60,9 @@ public class TicketController {
         return ResponseEntity.ok(ticketDto);
     }
 
-    //  POST
+
+    // POST
+
 
     @PostMapping("/tickets")
     public ResponseEntity<Ticket> addTicket(
@@ -66,19 +72,23 @@ public class TicketController {
         return new ResponseEntity<>(newTicket, HttpStatus.CREATED);
     }
 
-    //  PUT
+
+    // PUT
+
 
     @PutMapping("/tickets/{id}")
     public ResponseEntity<Ticket> modifyTicket(
             @PathVariable long id,
-            @RequestBody Ticket ticket)
+            @Valid @RequestBody Ticket ticket)
             throws TicketNotFoundException {
 
         Ticket updatedTicket = ticketService.modify(id, ticket);
         return ResponseEntity.ok(updatedTicket);
     }
 
-    //  PATCH
+
+    // PATCH
+
 
     @PatchMapping("/tickets/{id}")
     public ResponseEntity<Ticket> patchTicket(
@@ -90,7 +100,9 @@ public class TicketController {
         return ResponseEntity.ok(updatedTicket);
     }
 
-    //  DELETE
+
+    // DELETE
+
 
     @DeleteMapping("/tickets/{id}")
     public ResponseEntity<Void> deleteTicket(@PathVariable long id)
@@ -98,31 +110,5 @@ public class TicketController {
 
         ticketService.delete(id);
         return ResponseEntity.noContent().build();
-    }
-
-    //  EXCEPTIONS
-
-    @ExceptionHandler(TicketNotFoundException.class)
-    public ResponseEntity<ErrorResponse> handleException(TicketNotFoundException tnfe) {
-        ErrorResponse errorResponse =
-                ErrorResponse.notFound("The ticket does not exist");
-        return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
-    }
-
-    @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<ErrorResponse> handleException(
-            MethodArgumentNotValidException manve) {
-
-        Map<String, String> errors = new HashMap<>();
-
-        manve.getBindingResult().getAllErrors().forEach(error -> {
-            String fieldName = ((FieldError) error).getField();
-            String message = error.getDefaultMessage();
-            errors.put(fieldName, message);
-        });
-
-        ErrorResponse errorResponse =
-                ErrorResponse.validationError(errors);
-        return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
     }
 }

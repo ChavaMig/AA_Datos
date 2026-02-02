@@ -6,11 +6,8 @@ import com.example.aa1.service.SparePartService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.FieldError;
-import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -24,7 +21,9 @@ public class SparePartController {
         this.sparePartService = sparePartService;
     }
 
-    //  GET (CON FILTRADO )
+
+    // GET (CON FILTRADO)
+
 
     @GetMapping
     public ResponseEntity<List<SparePart>> getAll(
@@ -37,17 +36,36 @@ public class SparePartController {
         );
     }
 
+
+    // GET BY ID
+
+
     @GetMapping("/{id}")
     public ResponseEntity<SparePart> getById(@PathVariable Long id)
             throws SparePartNotFoundException {
 
-        return ResponseEntity.ok(sparePartService.findById(id));
+        return ResponseEntity.ok(
+                sparePartService.findById(id)
+        );
     }
 
+
+    // POST
+
+
     @PostMapping
-    public ResponseEntity<SparePart> add(@Valid @RequestBody SparePart sparePart) {
-        return new ResponseEntity<>(sparePartService.add(sparePart), HttpStatus.CREATED);
+    public ResponseEntity<SparePart> add(
+            @Valid @RequestBody SparePart sparePart) {
+
+        return new ResponseEntity<>(
+                sparePartService.add(sparePart),
+                HttpStatus.CREATED
+        );
     }
+
+
+    // PUT
+
 
     @PutMapping("/{id}")
     public ResponseEntity<SparePart> modify(
@@ -55,10 +73,14 @@ public class SparePartController {
             @Valid @RequestBody SparePart sparePart)
             throws SparePartNotFoundException {
 
-        return ResponseEntity.ok(sparePartService.modify(id, sparePart));
+        return ResponseEntity.ok(
+                sparePartService.modify(id, sparePart)
+        );
     }
 
-    //  PATCH
+
+    // PATCH
+
 
     @PatchMapping("/{id}")
     public ResponseEntity<SparePart> patch(
@@ -66,8 +88,14 @@ public class SparePartController {
             @RequestBody Map<String, Object> updates)
             throws SparePartNotFoundException {
 
-        return ResponseEntity.ok(sparePartService.patch(id, updates));
+        return ResponseEntity.ok(
+                sparePartService.patch(id, updates)
+        );
     }
+
+
+    // DELETE
+
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable Long id)
@@ -75,31 +103,5 @@ public class SparePartController {
 
         sparePartService.delete(id);
         return ResponseEntity.noContent().build();
-    }
-
-    //  EXCEPTIONS
-
-    @ExceptionHandler(SparePartNotFoundException.class)
-    public ResponseEntity<Map<String, String>> handleNotFound(
-            SparePartNotFoundException ex) {
-
-        return ResponseEntity
-                .status(HttpStatus.NOT_FOUND)
-                .body(Map.of("error", ex.getMessage()));
-    }
-
-    @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<Map<String, String>> handleValidation(
-            MethodArgumentNotValidException ex) {
-
-        Map<String, String> errors = new HashMap<>();
-
-        ex.getBindingResult().getAllErrors().forEach(error -> {
-            String fieldName = ((FieldError) error).getField();
-            String message = error.getDefaultMessage();
-            errors.put(fieldName, message);
-        });
-
-        return new ResponseEntity<>(errors, HttpStatus.BAD_REQUEST);
     }
 }
