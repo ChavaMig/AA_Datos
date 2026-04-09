@@ -1,10 +1,12 @@
 package com.example.aa1.service;
 
 import com.example.aa1.domain.Clinic;
+import com.example.aa1.domain.ClinicV2;
 import com.example.aa1.dto.ClinicDto;
 import com.example.aa1.dto.ClinicOutDto;
 import com.example.aa1.exception.ClinicNotFoundException;
 import com.example.aa1.repository.ClinicRepository;
+import com.example.aa1.repository.ClinicRepositoryV2;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -104,5 +106,35 @@ public class ClinicService {
 
     public List<Clinic> findByName(String name) {
         return clinicRepository.findByNameContaining(name);
+    }
+
+    // --- NUEVO REPOSITORIO V2 ---
+
+    @Autowired
+    private ClinicRepositoryV2 clinicRepositoryV2;
+
+// --- MÉTODOS V2 ---
+
+    public List<ClinicV2> findAllV2() {
+        return (List<ClinicV2>) clinicRepositoryV2.findAll();
+    }
+
+    public ClinicV2 addV2(ClinicV2 clinic) {
+        return clinicRepositoryV2.save(clinic);
+    }
+
+    public ClinicV2 modifyV2(long id, ClinicV2 clinic) throws ClinicNotFoundException {
+        ClinicV2 existingClinic = clinicRepositoryV2.findById(id)
+                .orElseThrow(() -> new ClinicNotFoundException("Clinic not found"));
+
+        clinic.setId(id);
+        return clinicRepositoryV2.save(clinic);
+    }
+
+    public void deleteV2(long id) throws ClinicNotFoundException {
+        ClinicV2 clinic = clinicRepositoryV2.findById(id)
+                .orElseThrow(() -> new ClinicNotFoundException("Clinic not found"));
+
+        clinicRepositoryV2.delete(clinic);
     }
 }
