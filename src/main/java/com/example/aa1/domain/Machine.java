@@ -1,6 +1,6 @@
 package com.example.aa1.domain;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import lombok.*;
@@ -29,11 +29,8 @@ public class Machine {
     @Column(nullable = false)
     private String manufacturer;
 
-    //Asignar maquinas a clinicas mediante el nombre
-
     @ManyToOne
     @JoinColumn(name = "clinic_id")
-    @JsonBackReference // Evita volver a la clínica y entrar en bucle
+    @JsonIgnoreProperties("machines")
     private Clinic clinic;
-
 }
