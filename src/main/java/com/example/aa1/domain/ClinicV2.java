@@ -3,6 +3,7 @@ package com.example.aa1.domain;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
 import java.util.List;
@@ -34,7 +35,6 @@ public class ClinicV2 {
 
     // --- CAMBIO V2 ---
     @Column
-    @NotBlank(message = "website is mandatory")
     private String website;
 
     @OneToMany(mappedBy = "clinic")
