@@ -817,13 +817,6 @@ paths:
                       clinic:
                         id: 1
                         name: "Clinica Central"
-                    - id: 2
-                      serialNumber: "SN-2024-002"
-                      model: "CT-5000"
-                      manufacturer: "GE Healthcare"
-                      clinic:
-                        id: 1
-                        name: "Clinica Central"
         '400':
           description: Parámetros de consulta inválidos
           content:
@@ -896,15 +889,18 @@ paths:
                       email: "juan.garcia@aa1.com"
                       phone: "+34654321987"
                       active: true
-                    - id: 2
-                      name: "María"
-                      surname: "López"
-                      email: "maria.lopez@aa1.com"
-                      phone: "+34654987654"
-                      active: true
-                listaVacia:
-                  summary: Sin técnicos encontrados
-                  value: []
+        '400':
+          description: Datos de entrada inválidos
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                code: 400
+                title: "bad-request"
+                message: "Validation error"
+                errors:
+                  name: "name is mandatory"
         '500':
           description: Error interno del servidor
           content:
@@ -1330,15 +1326,6 @@ paths:
                       manufacturer: "FilterTech"
                       price: 150.50
                       stock: 25
-                    - id: 2
-                      name: "Sensor Temperatura"
-                      serialNumber: "SENSOR-2024-T456"
-                      manufacturer: "SensorPro"
-                      price: 75.99
-                      stock: 40
-                listaVacia:
-                  summary: Sin repuestos encontrados
-                  value: []
         '400':
           description: Parámetros de consulta inválidos
           content:
@@ -1740,18 +1727,7 @@ paths:
                       machineModel: "MRI-3000"
                       technicianId: 1
                       technicianName: "Juan García"
-                    - id: 2
-                      description: "Reparación de sensor"
-                      openDate: "2024-01-10"
-                      closeDate: "2024-01-12"
-                      status: "CLOSED"
-                      machineId: 2
-                      machineModel: "CT-5000"
-                      technicianId: 2
-                      technicianName: "María López"
-                listaVacia:
-                  summary: Sin tickets encontrados
-                  value: [ ]
+
         '400':
           description: Parámetros de consulta inválidos
           content:
@@ -2438,16 +2414,6 @@ paths:
                       clinic:
                         id: 1
                         name: "Clinica Central"
-                    - id: 3
-                      serialNumber: "SN-2024-005"
-                      model: "CT-5000"
-                      manufacturer: "GE Healthcare"
-                      clinic:
-                        id: 1
-                        name: "Clinica Central"
-                listaVacia:
-                  summary: Clínica sin máquinas asociadas
-                  value: [ ]
         '400':
           description: ID de clínica inválido
           content:

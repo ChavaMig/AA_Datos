@@ -11,9 +11,9 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-@Entity
+@Entity(name = "ClinicV2")
 @Table(name = "clinics")
-public class Clinic {
+public class ClinicV2 {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -32,7 +32,12 @@ public class Clinic {
     @Column
     private String email;
 
+    // --- CAMBIO V2 ---
+    @Column
+    @NotBlank(message = "website is mandatory")
+    private String website;
+
     @OneToMany(mappedBy = "clinic")
-    @JsonIgnoreProperties("clinic") // 🔥 evita bucle
+    @JsonIgnoreProperties("clinic")
     private List<Machine> machines;
 }
