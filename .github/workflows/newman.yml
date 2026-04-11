@@ -1,0 +1,37 @@
+name: Integration tests with Newman
+on:
+  pull_request:
+    branches:
+      - main
+      - master
+      - develop
+jobs:
+  newman:
+    runs-on: ubuntu-latest
+    services:
+      mariadb:
+        image: mariadb:10.11
+        env:
+          MARIADB_ROOT_PASSWORD: root
+          MARIADB_DATABASE: aa1
+          MARIADB_USER: aa1
+          MARIADB_PASSWORD: aa1
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd="healthcheck.sh --connect --innodb_initialized"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=5
+    steps:
+      - uses: actions/checkout@master
+      - uses: actions/setup-java@v5
+        with:
+          distribution: 'temurin'
+          java-version: '21'
+      - run: mvn package -DskipTests
+      - run: |
+          nohup java -jar target/aa1-0.0.1-SNAPSHOT.jar --spring.profiles.active=prod --spring.datasource.url=jdbc:mariadb://localhost:3306/aa1 --spring.datasource.username=aa1 --spring.datasource.password=aa1 &
+          sleep 20
+      - run: npm install -g newman
+      - run: newman run clinics.postman_collection.json -e local.postman_environment.json
